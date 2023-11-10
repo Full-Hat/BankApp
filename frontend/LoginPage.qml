@@ -7,8 +7,6 @@ Rectangle {
     width: parent.width
     height: parent.height
 
-    color: "#c2c2c2"
-
     Text {
         id: page_description
         y: 158

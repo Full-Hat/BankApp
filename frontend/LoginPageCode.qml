@@ -53,5 +53,8 @@ Rectangle {
         text: qsTr("Back")
         font.family: "Verdana"
         font.pointSize: 30
+        onClicked: {
+            main_stack_view.pop()
+        }
     }
 }
