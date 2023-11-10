@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     QQmlApplicationEngine qml_engine;
 
-    qml_engine.load(QUrl("qrc:/main/frontend/LoginPage.qml"));
+    qml_engine.load(QUrl("qrc:/main/frontend/Main.qml"));
 
     if (qml_engine.rootObjects().isEmpty())
     {

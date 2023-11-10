@@ -2,8 +2,9 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Rectangle {
-    width: 1920
-    height: 1080
+    id: login_page_code
+    width: parent.width
+    height: parent.height
 
     Text {
         id: page_description
@@ -13,22 +14,19 @@ Rectangle {
         text: qsTr("Login")
         font.pixelSize: 30
         horizontalAlignment: Text.AlignHCenter
-        scale: 1
         font.family: "Verdana"
-        anchors.horizontalCenterOffset: 27
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    TextEdit {
+    TextField {
         id: code_edit
         y: 490
         width: 372
         height: 53
-        text: qsTr("enter code")
+        placeholderText: qsTr("enter code")
         font.pixelSize: 30
         horizontalAlignment: Text.AlignHCenter
         font.family: "Verdana"
-        anchors.horizontalCenterOffset: 27
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
@@ -38,6 +36,7 @@ Rectangle {
         y: 774
         width: 285
         height: 72
+        anchors.horizontalCenter: parent.horizontalCenter
         text: qsTr("Login")
         font.pointSize: 30
         font.family: "Verdana"
@@ -50,6 +49,7 @@ Rectangle {
         y: 852
         width: 285
         height: 69
+        anchors.horizontalCenter: parent.horizontalCenter
         text: qsTr("Back")
         font.family: "Verdana"
         font.pointSize: 30

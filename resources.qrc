@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/frontend">
         <file>LoginPage.qml</file>
+        <file>LoginPageCode.qml</file>
     </qresource>
 </RCC>

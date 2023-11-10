@@ -25,6 +25,8 @@ qt_add_qml_module(${ProjectName}
         VERSION 1.0
         QML_FILES
             "frontend/LoginPage.qml"
+            "frontend/LoginPageCode.qml"
+            "frontend/Main.qml"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )

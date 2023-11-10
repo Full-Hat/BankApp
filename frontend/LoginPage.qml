@@ -2,12 +2,10 @@ import QtQuick 6.5
 import QtQuick.Window 6.5
 import QtQuick.Controls 2.12
 
-Window {
-    visible: true
-    title: "Hello World"
+Rectangle {
     id: rectangle
-    width: 1920
-    height: 1080
+    width: parent.width
+    height: parent.height
 
     color: "#c2c2c2"
 
@@ -62,6 +60,8 @@ Window {
         checkable: false
         onClicked: {
             CtrLogin.OnLogin(login_edit.text, password_edit.text)
+
+            main_stack_view.push("LoginPageCode.qml")
         }
     }
 
