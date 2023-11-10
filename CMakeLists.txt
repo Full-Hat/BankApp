@@ -2,8 +2,37 @@ cmake_minimum_required(VERSION 3.26)
 
 set(CMAKE_TOOLCHAIN_FILE ./vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
 
-project(BankApp)
+project(BankApp VERSION 1.0.0)
+set(PROJECT_VERSION_MAJOR 1)
+set(PROJECT_VERSION_MINOR 0)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(BankApp main.cpp)
+# Link QT6
+find_package(Qt6 COMPONENTS Core Quick Widgets REQUIRED)
+
+set(ProjectName BankApp)
+qt_standard_project_setup()
+
+qt_add_executable(${ProjectName}
+        main.cpp
+        core/Login.cpp
+        core/Login.h
+)
+
+qt_add_qml_module(${ProjectName}
+        URI main
+        VERSION 1.0
+        QML_FILES
+            "frontend/LoginPage.qml"
+        RESOURCE_PREFIX /
+        RESOURCES resources.qrc
+)
+
+set_target_properties(${ProjectName} PROPERTIES
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+        MACOSX_BUNDLE TRUE
+)
+
+target_link_libraries(${ProjectName} PRIVATE Qt6::Core Qt6::Quick Qt6::Widgets)
