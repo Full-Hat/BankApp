@@ -1,9 +1,7 @@
 //
 // Created by System Administrator on 11/9/23.
 //
-
-#ifndef BANKAPP_LOGIN_H
-#define BANKAPP_LOGIN_H
+#pragma once
 
 #include <QObject>
 
@@ -20,4 +18,13 @@ signals:
     void LoginFailed(QString Description);
 };
 
-#endif //BANKAPP_LOGIN_H
+class LoginCode : public QObject {
+    Q_OBJECT
+
+public slots:
+    void OnLogin(const QString& Code);
+
+signals:
+    void LoginCorrect();
+    void LoginFailed(QString Description);
+};

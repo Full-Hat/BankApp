@@ -21,5 +21,8 @@ int main(int argc, char* argv[]) {
     Login LoginController;
     qml_engine.rootContext()->setContextProperty("CtrLogin", &LoginController);
 
+    LoginCode LoginCodeController;
+    qml_engine.rootContext()->setContextProperty("CtrLoginCode", &LoginCodeController);
+
     return app.exec();
 }

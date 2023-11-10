@@ -18,6 +18,7 @@ qt_add_executable(${ProjectName}
         main.cpp
         core/Login.cpp
         core/Login.h
+        core/User.hpp
 )
 
 qt_add_qml_module(${ProjectName}
