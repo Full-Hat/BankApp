@@ -17,8 +17,10 @@ qt_standard_project_setup()
 qt_add_executable(${ProjectName}
         main.cpp
         core/Login.cpp
-        core/Login.h
+        core/Login.hpp
         core/User.hpp
+        core/Signup.cpp
+        core/Signup.hpp
 )
 
 qt_add_qml_module(${ProjectName}
@@ -29,6 +31,7 @@ qt_add_qml_module(${ProjectName}
             "frontend/LoginPageCode.qml"
             "frontend/Main.qml"
             "frontend/PopUpWarning.qml"
+            "frontend/SignupPage.qml"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )

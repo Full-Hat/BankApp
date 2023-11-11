@@ -2,8 +2,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Rectangle {
-    width: 1920
-    height: 1080
+    width: parent.width
+    height: parent.height
 
     Text {
         id: page_description
@@ -16,11 +16,10 @@ Rectangle {
         clip: true
         anchors.horizontalCenter: parent.horizontalCenter
         font.family: "Verdana"
-        anchors.horizontalCenterOffset: 27
         scale: 1
     }
 
-    TextEdit {
+    TextField {
         id: login_edit
         y: 490
         width: 372
@@ -30,10 +29,9 @@ Rectangle {
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         font.family: "Verdana"
-        anchors.horizontalCenterOffset: 27
     }
 
-    TextEdit {
+    TextField {
         id: password_edit
         y: 566
         width: 372
@@ -43,7 +41,6 @@ Rectangle {
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         font.family: "Verdana"
-        anchors.horizontalCenterOffset: 27
         font.styleName: "Condensed Regular"
     }
 
@@ -53,6 +50,7 @@ Rectangle {
         y: 774
         width: 285
         height: 72
+        anchors.horizontalCenter: parent.horizontalCenter
         text: qsTr("Signup")
         font.pointSize: 30
         font.family: "Verdana"
@@ -65,6 +63,7 @@ Rectangle {
         y: 900
         width: 285
         height: 72
+        anchors.horizontalCenter: parent.horizontalCenter
         text: qsTr("Login")
         font.pointSize: 30
         font.family: "Verdana"
@@ -78,6 +77,7 @@ Rectangle {
         width: 285
         height: 57
         color: "#0a7ea7"
+        anchors.horizontalCenter: parent.horizontalCenter
         text: qsTr("Already have an accaunt?")
         font.pixelSize: 27
         horizontalAlignment: Text.AlignHCenter

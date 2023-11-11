@@ -72,6 +72,9 @@ Rectangle {
         font.family: "Verdana"
         anchors.horizontalCenter: parent.horizontalCenter
         checkable: false
+        onClicked: {
+            main_stack_view.replace("SignupPage.qml")
+        }
     }
 
     Text {

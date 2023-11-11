@@ -5,7 +5,7 @@
 #include <iostream>
 #include <QQmlContext>
 
-#include "core/Login.h"
+#include "core/Login.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
