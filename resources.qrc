@@ -2,5 +2,7 @@
     <qresource prefix="/frontend">
         <file>LoginPage.qml</file>
         <file>LoginPageCode.qml</file>
+        <file>Main.qml</file>
+        <file>PopUpWarning.qml</file>
     </qresource>
 </RCC>

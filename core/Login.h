@@ -14,8 +14,8 @@ public slots:
 
 signals:
     // Responses for login operation
-    void LoginCorrect();
-    void LoginFailed(QString Description);
+    void loginCorrect();
+    void loginFailed(QString Description);
 };
 
 class LoginCode : public QObject {
@@ -25,6 +25,6 @@ public slots:
     void OnLogin(const QString& Code);
 
 signals:
-    void LoginCorrect();
-    void LoginFailed(QString Description);
+    void loginCorrect();
+    void loginFailed(QString description);
 };

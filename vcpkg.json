@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "dependencies": [
     "qtbase",
-    "qtdeclarative"
+    "qtdeclarative",
+    "qt5compat",
+    "qt5-graphicaleffects"
   ]
 }

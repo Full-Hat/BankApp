@@ -58,8 +58,6 @@ Rectangle {
         checkable: false
         onClicked: {
             CtrLogin.OnLogin(login_edit.text, password_edit.text)
-
-            main_stack_view.push("LoginPageCode.qml")
         }
     }
 
@@ -89,5 +87,23 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         font.weight: Font.Light
         styleColor: "#000000"
+    }
+
+    Connections {
+        target: CtrLogin
+        function onLoginCorrect() {
+            main_stack_view.push("LoginPageCode.qml")
+        }
+        function onLoginFailed(description) {
+            popUp.item.localText = description
+            popUp.item.open()
+        }
+    }
+
+    Loader {
+        id: popUp
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: parent.height * 0.5
+        source: "qrc:/main/frontend/PopUpWarning.qml"
     }
 }

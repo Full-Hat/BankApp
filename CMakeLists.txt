@@ -9,7 +9,7 @@ set(PROJECT_VERSION_MINOR 0)
 set(CMAKE_CXX_STANDARD 20)
 
 # Link QT6
-find_package(Qt6 COMPONENTS Core Quick Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Core Quick Widgets Core5Compat REQUIRED)
 
 set(ProjectName BankApp)
 qt_standard_project_setup()
@@ -28,6 +28,7 @@ qt_add_qml_module(${ProjectName}
             "frontend/LoginPage.qml"
             "frontend/LoginPageCode.qml"
             "frontend/Main.qml"
+            "frontend/PopUpWarning.qml"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )
@@ -38,4 +39,4 @@ set_target_properties(${ProjectName} PROPERTIES
         MACOSX_BUNDLE TRUE
 )
 
-target_link_libraries(${ProjectName} PRIVATE Qt6::Core Qt6::Quick Qt6::Widgets)
+target_link_libraries(${ProjectName} PRIVATE Qt6::Core Qt6::Quick Qt6::Widgets Qt6::Core5Compat)

@@ -13,15 +13,10 @@ void Login::OnLogin(const QString& Login, const QString& Password) {
         "] password [" << Password.toStdString() << "]" << std::endl;
 
     CurrentUser::Get().SetLogin(Login);
+    emit loginCorrect();
 }
 
 void LoginCode::OnLogin(const QString &Code) {
     std::cout << "User try to login code [" << Code.toStdString() << "]" << std::endl;
-
-    if (std::rand()) {
-        LoginCorrect();
-    }
-    else {
-        LoginFailed(QString::fromStdString(std::to_string(std::rand())));
-    }
+    emit loginFailed("");
 }

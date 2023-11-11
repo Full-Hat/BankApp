@@ -1,10 +1,13 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import Qt5Compat.GraphicalEffects
 
 Rectangle {
     id: login_page_code
     width: parent.width
     height: parent.height
+
+    color: "white"
 
     Text {
         id: page_description
@@ -41,6 +44,9 @@ Rectangle {
         font.pointSize: 30
         font.family: "Verdana"
         checkable: false
+        onClicked: {
+            CtrLoginCode.OnLogin(code_edit.text)
+        }
     }
 
     Button {
@@ -56,5 +62,23 @@ Rectangle {
         onClicked: {
             main_stack_view.pop()
         }
+    }
+
+    Connections {
+        target: CtrLoginCode
+        function onLoginCorrect() {
+            // Open main page
+        }
+        function onLoginFailed(description) {
+            popUp.item.localText = description
+            popUp.item.open()
+        }
+    }
+
+    Loader {
+        id: popUp
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: parent.height * 0.5
+        source: "qrc:/main/frontend/PopUpWarning.qml"
     }
 }
