@@ -8,7 +8,7 @@
 
 void Signup::OnSignup(QString Login, QString Password) {
     std::cout << "User try to signup login [" << Login.toStdString() << "] password [" <<
-        Password.toStdString() << std::endl;
+        Password.toStdString() << "]" << std::endl;
 
     emit signupCorrect();
 }

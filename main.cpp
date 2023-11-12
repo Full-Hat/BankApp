@@ -6,6 +6,7 @@
 #include <QQmlContext>
 
 #include "core/Login.hpp"
+#include "core/Signup.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -23,6 +24,9 @@ int main(int argc, char* argv[]) {
 
     LoginCode LoginCodeController;
     qml_engine.rootContext()->setContextProperty("CtrLoginCode", &LoginCodeController);
+
+    Signup SignupController;
+    qml_engine.rootContext()->setContextProperty("CtrSignup", &SignupController);
 
     return app.exec();
 }

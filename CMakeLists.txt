@@ -32,6 +32,7 @@ qt_add_qml_module(${ProjectName}
             "frontend/Main.qml"
             "frontend/PopUpWarning.qml"
             "frontend/SignupPage.qml"
+            "frontend/PopUpInfo.qml"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )

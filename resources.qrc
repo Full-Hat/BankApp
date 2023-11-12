@@ -5,5 +5,6 @@
         <file>Main.qml</file>
         <file>PopUpWarning.qml</file>
         <file>SignupPage.qml</file>
+        <file>PopUpInfo.qml</file>
     </qresource>
 </RCC>
