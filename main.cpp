@@ -12,13 +12,7 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     QQmlApplicationEngine qml_engine;
 
-    qml_engine.load(QUrl("qrc:/main/frontend/Main.qml"));
-
-    if (qml_engine.rootObjects().isEmpty())
-    {
-        throw std::runtime_error("Cant setup qml engine");
-    }
-
+    // Set context
     Login LoginController;
     qml_engine.rootContext()->setContextProperty("CtrLogin", &LoginController);
 
@@ -27,6 +21,14 @@ int main(int argc, char* argv[]) {
 
     Signup SignupController;
     qml_engine.rootContext()->setContextProperty("CtrSignup", &SignupController);
+
+    // Load frontend
+    qml_engine.load(QUrl("qrc:/main/frontend/Main.qml"));
+
+    if (qml_engine.rootObjects().isEmpty())
+    {
+        throw std::runtime_error("Cant setup qml engine");
+    }
 
     return app.exec();
 }
