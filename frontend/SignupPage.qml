@@ -3,8 +3,8 @@ import QtQuick.Controls 2.15
 
 Rectangle {
     id: rectangle_signup
-    width: parent.width
-    height: parent.height
+    width: main_stack_view.width
+    height: main_stack_view.height
 
     Text {
         id: page_description

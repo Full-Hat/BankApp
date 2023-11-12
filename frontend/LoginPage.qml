@@ -4,8 +4,8 @@ import QtQuick.Controls 2.12
 
 Rectangle {
     id: rectangle
-    width: parent.width
-    height: parent.height
+    width: main_stack_view.width
+    height: main_stack_view.height
 
     Text {
         id: page_description
