@@ -88,7 +88,7 @@ Rectangle {
                  onClicked: {
                     console.log("Transfer to Card button clicked")
                     get_string.item.ok = function (str) { CtrCards.onTransfer(str) }
-                    get_string.item.no = function (str) { CtrCards.onTransfer(str) }
+                    get_string.item.no = function (str) {  }
                     get_string.item.open()
                  }
              }
@@ -96,7 +96,9 @@ Rectangle {
              Button {
                  text: "Transfer to Bill"
                  width: 150
-                 onClicked: console.log("Transfer to Bill button clicked")
+                 onClicked: {
+                    console.log("Transfer to Bill button clicked")
+                 }
              }
 
              Button {
