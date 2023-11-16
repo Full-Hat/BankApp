@@ -14,5 +14,6 @@
         <file>card_background.png</file>
         <file>GetString.qml</file>
         <file>History.qml</file>
+        <file>KreditsView.qmlZ</file>
     </qresource>
 </RCC>

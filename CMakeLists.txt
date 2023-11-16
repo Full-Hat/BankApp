@@ -44,6 +44,7 @@ qt_add_qml_module(${ProjectName}
             "frontend/CardsView.qml"
             "frontend/BillsView.qml"
             "frontend/Bill.qml"
+            "frontend/KreditsView.qml"
         RESOURCES
             "frontend/images/card_background.png"
         RESOURCE_PREFIX /

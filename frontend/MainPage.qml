@@ -20,6 +20,9 @@ Rectangle {
         TabButton {
             text: qsTr("Account")
         }
+        TabButton {
+            text: qsTr("Kredits")
+        }
     }
 
     StackLayout {
@@ -89,6 +92,15 @@ Rectangle {
         }
         Column {
             // Kredits
+            width: parent.width
+            height: parent.height
+
+            Loader {
+                id: kredits
+                source: "qrc:/main/frontend/KreditsView.qml"
+
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
         }
         Column {
             // Documents
