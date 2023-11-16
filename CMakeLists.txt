@@ -23,6 +23,8 @@ qt_add_executable(${ProjectName}
         core/Signup.hpp
         core/Cards.cpp
         core/Cards.hpp
+        core/Bills.cpp
+        core/Bills.hpp
 )
 
 qt_add_qml_module(${ProjectName}
@@ -40,6 +42,8 @@ qt_add_qml_module(${ProjectName}
             "frontend/GetString.qml"
             "frontend/History.qml"
             "frontend/CardsView.qml"
+            "frontend/BillsView.qml"
+            "frontend/Bill.qml"
         RESOURCES
             "frontend/images/card_background.png"
         RESOURCE_PREFIX /

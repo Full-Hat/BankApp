@@ -9,6 +9,8 @@
         <file>MainPage.qml</file>
         <file>Card.qml</file>
         <file>CardsView.qml</file>
+        <file>Bill.qml</file>
+        <file>BillsView.qml</file>
         <file>card_background.png</file>
         <file>GetString.qml</file>
         <file>History.qml</file>

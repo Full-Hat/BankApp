@@ -8,6 +8,7 @@
 #include "core/Login.hpp"
 #include "core/Signup.hpp"
 #include "core/Cards.hpp"
+#include "core/Bills.hpp"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -25,6 +26,9 @@ int main(int argc, char* argv[]) {
 
     Cards CardsController;
     qml_engine.rootContext()->setContextProperty("CtrCards", &CardsController);
+
+    Bills BillsController;
+    qml_engine.rootContext()->setContextProperty("CtrBills", &BillsController);
 
     // Load frontend
     qml_engine.load(QUrl("qrc:/main/frontend/Main.qml"));
