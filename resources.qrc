@@ -10,5 +10,6 @@
         <file>Card.qml</file>
         <file>card_background.png</file>
         <file>GetString.qml</file>
+        <file>History.qml</file>
     </qresource>
 </RCC>

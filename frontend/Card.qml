@@ -46,8 +46,27 @@ Rectangle {
     Rectangle {
         id: blockedOverlay
         anchors.fill: parent
-        color: "red"
-        opacity: false ? 0.5 : 0
+        color: "white"
+        opacity: isBlocked ? 0.5 : 0
+
+        property bool rounded: true
+        property bool adapt: true
+
+        layer.enabled: rounded
+        layer.effect: OpacityMask {
+            maskSource: Item {
+                width: cardImage.width
+                height: cardImage.height
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: cardImage.adapt ? cardImage.width : Math.min(cardImage.width, cardImage.height)
+                    height: cardImage.adapt ? cardImage.height : width
+                    radius: 20
+                }
+            }
+        }
+
+
     }
 
 //    Connections {

@@ -98,19 +98,30 @@ Rectangle {
                  width: 150
                  onClicked: {
                     console.log("Transfer to Bill button clicked")
+                    get_string.item.ok = function (str) { CtrCards.onTransfer(str) }
+                    get_string.item.no = function (str) {  }
+                    get_string.item.open()
                  }
              }
 
              Button {
                  text: "Block"
                  width: 150
-                 onClicked: console.log("Block button clicked")
+                 onClicked: {
+                    console.log("Block button clicked")
+                    cardListModel.get(cardsView.currentIndex).isBlocked =
+                        !cardListModel.get(cardsView.currentIndex).isBlocked
+                 }
+
              }
 
              Button {
                  text: "History"
                  width: 150
-                 onClicked: console.log("History button clicked")
+                 onClicked: {
+                    main_stack_view.push("History.qml")
+                    console.log("History button clicked")
+                 }
              }
 
              Button {

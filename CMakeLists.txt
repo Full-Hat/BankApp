@@ -38,6 +38,7 @@ qt_add_qml_module(${ProjectName}
             "frontend/MainPage.qml"
             "frontend/Card.qml"
             "frontend/GetString.qml"
+            "frontend/History.qml"
         RESOURCES
             "frontend/images/card_background.png"
         RESOURCE_PREFIX /

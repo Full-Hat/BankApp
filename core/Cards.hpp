@@ -13,6 +13,8 @@ public slots:
     void onCardChoosed(QString id);
 
     void onTransfer(QString target_number);
+
+    //void onBlocked();
 signals:
     void addCard(int id);
     void removeCard(int id);
