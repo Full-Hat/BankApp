@@ -18,5 +18,5 @@ void Login::OnLogin(const QString& Login, const QString& Password) {
 
 void LoginCode::OnLogin(const QString &Code) {
     std::cout << "User try to login code [" << Code.toStdString() << "]" << std::endl;
-    emit loginFailed("");
+    emit loginCorrect();
 }

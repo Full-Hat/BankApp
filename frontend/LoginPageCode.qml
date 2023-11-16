@@ -4,8 +4,8 @@ import Qt5Compat.GraphicalEffects
 
 Rectangle {
     id: login_page_code
-    width: parent.width
-    height: parent.height
+    width: main_stack_view.width
+    height: main_stack_view.height
 
     color: "white"
 
@@ -68,6 +68,7 @@ Rectangle {
         target: CtrLoginCode
         function onLoginCorrect() {
             // Open main page
+            main_stack_view.replace("MainPage.qml")
         }
         function onLoginFailed(description) {
             popUp.item.localText = description

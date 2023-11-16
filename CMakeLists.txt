@@ -21,6 +21,8 @@ qt_add_executable(${ProjectName}
         core/User.hpp
         core/Signup.cpp
         core/Signup.hpp
+        core/Cards.cpp
+        core/Cards.hpp
 )
 
 qt_add_qml_module(${ProjectName}
@@ -33,6 +35,11 @@ qt_add_qml_module(${ProjectName}
             "frontend/PopUpWarning.qml"
             "frontend/SignupPage.qml"
             "frontend/PopUpInfo.qml"
+            "frontend/MainPage.qml"
+            "frontend/Card.qml"
+            "frontend/GetString.qml"
+        RESOURCES
+            "frontend/images/card_background.png"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )
