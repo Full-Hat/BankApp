@@ -8,6 +8,7 @@
         <file>PopUpInfo.qml</file>
         <file>MainPage.qml</file>
         <file>Card.qml</file>
+        <file>CardsView.qml</file>
         <file>card_background.png</file>
         <file>GetString.qml</file>
         <file>History.qml</file>
