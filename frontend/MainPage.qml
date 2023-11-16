@@ -40,7 +40,7 @@ Rectangle {
             }
             ListElement {
                 cardId: "2"
-                cardNumber: "** 3456"
+                cardNumber: "** 23w"
                 balance: "1000"
                 isBlocked: false
             }
@@ -127,7 +127,10 @@ Rectangle {
              Button {
                 text: "Remove card"
                 width: 150
-                onClicked: console.log("Delete card button")
+                onClicked: {
+                    console.log("Delete card button")
+                    cardListModel.remove(cardsView.currentIndex)
+                }
             }
 
             Button {
