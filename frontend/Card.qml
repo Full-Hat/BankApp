@@ -6,6 +6,12 @@ Rectangle {
     width: 300
     height: 200
 
+    Timer {
+        id: timer
+        interval: 5 // Delay in milliseconds
+        onTriggered: opacity = 0.5
+    }
+
     BorderImage {
         id: cardImage
         anchors.fill: parent

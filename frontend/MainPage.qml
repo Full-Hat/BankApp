@@ -61,9 +61,26 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 Repeater {
                     model: cardListModel
-                    delegate: Card {}
+                    delegate: Card {
+                        opacity: 0.0
+
+                        Behavior on opacity {
+                            NumberAnimation { duration: 500 }
+                        }
+                    }
                 }
                 onCurrentIndexChanged: {
+                   for (var i = 0; i < count; i++) {
+                       var item = itemAt(i);
+                       if (i === currentIndex) {
+                           item.opacity = 1.0;
+                       } else if (i === currentIndex - 1 || i === currentIndex + 1) {
+                           item.opacity = 0.0;
+                       }
+                       else {
+                           item.opacity = 0.0;
+                       }
+                   }
                    console.log(cardListModel.get(currentIndex).cardId)
                    CtrCards.onCardChoosed(cardListModel.get(currentIndex).cardId)
                }
@@ -83,6 +100,7 @@ Rectangle {
              anchors.horizontalCenter: parent.horizontalCenter
 
              Button {
+                 id: transfer_card
                  text: "Transfer to Card"
                  width: 150
                  onClicked: {
@@ -94,6 +112,7 @@ Rectangle {
              }
 
              Button {
+                 id: tramsfer_bill
                  text: "Transfer to Bill"
                  width: 150
                  onClicked: {
@@ -105,6 +124,7 @@ Rectangle {
              }
 
              Button {
+                 id: block
                  text: "Block"
                  width: 150
                  onClicked: {
@@ -116,6 +136,7 @@ Rectangle {
              }
 
              Button {
+                 id: history
                  text: "History"
                  width: 150
                  onClicked: {
@@ -125,18 +146,43 @@ Rectangle {
              }
 
              Button {
+                id: remove
                 text: "Remove card"
                 width: 150
                 onClicked: {
+                    if (cardsView.count - 1 === 0) {
+                        transfer_card.enabled = false
+                        tramsfer_bill.enabled = false
+                        block.enabled = false
+                        history.enabled = false
+                        remove.enabled = false
+                    }
+
+                    else if (cardListModel.currentIndex === 1 || (typeof el === 'undefined')) {
+                        cardsView.currentIndex = cardsView.count - 1;
+                    }
+
                     console.log("Delete card button")
+                    console.log(cardListModel.currentIndex)
                     cardListModel.remove(cardsView.currentIndex)
                 }
             }
 
             Button {
+                id: add
                 text: "Add card"
                 width: 150
-                onClicked: console.log("Add card button")
+                onClicked: {
+                    transfer_card.enabled = true
+                    tramsfer_bill.enabled = true
+                    block.enabled = true
+                    history.enabled = true
+                    remove.enabled = true
+
+                    console.log("Add card button")
+                    cardListModel.append({"cardId": "", "cardNumber": "", "balance": "", "isBlocked": false})
+                    cardsView.currentIndex = cardListModel.count - 1
+                }
             }
             }
 
