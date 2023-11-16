@@ -68,18 +68,6 @@ Column {
      }
 
      Button {
-         id: tramsfer_bill
-         text: "Transfer to Bill"
-         width: 150
-         onClicked: {
-            console.log("Transfer to Bill button clicked")
-            get_string.item.ok = function (str) { CtrBills.onTransfer(str) }
-            get_string.item.no = function (str) {  }
-            get_string.item.open()
-         }
-     }
-
-     Button {
          id: block
          text: "Block"
          width: 150
@@ -108,7 +96,6 @@ Column {
         onClicked: {
             if (billsView.count - 1 === 0) {
                 transfer_bill.enabled = false
-                tramsfer_bill.enabled = false
                 block.enabled = false
                 history.enabled = false
                 remove.enabled = false
@@ -130,7 +117,6 @@ Column {
         width: 150
         onClicked: {
             transfer_bill.enabled = true
-            tramsfer_bill.enabled = true
             block.enabled = true
             history.enabled = true
             remove.enabled = true
