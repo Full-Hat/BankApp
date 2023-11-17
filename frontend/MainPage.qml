@@ -23,6 +23,9 @@ Rectangle {
         TabButton {
             text: qsTr("Kredits")
         }
+        TabButton {
+            text: qsTr("Documents")
+        }
     }
 
     StackLayout {
@@ -36,13 +39,11 @@ Rectangle {
         ListModel {
             id: cardListModel
             ListElement {
-                cardId: "1"
                 cardNumber: "** 3456"
                 balance: "1000"
                 isBlocked: false
             }
             ListElement {
-                cardId: "2"
                 cardNumber: "** 23w"
                 balance: "1000"
                 isBlocked: false
@@ -104,6 +105,16 @@ Rectangle {
         }
         Column {
             // Documents
+            // Kredits
+            width: parent.width
+            height: parent.height
+
+            Loader {
+                id: documents
+                source: "qrc:/main/frontend/DocumentsView.qml"
+
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
         }
     }
 

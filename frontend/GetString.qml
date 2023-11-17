@@ -7,7 +7,7 @@ Dialog {
    standardButtons: Dialog.Ok | Dialog.Cancel
 
    width: 500
-   height: 100
+   height: 120
 
    property var ok: null
    property var no: null

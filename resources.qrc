@@ -15,5 +15,6 @@
         <file>GetString.qml</file>
         <file>History.qml</file>
         <file>KreditsView.qmlZ</file>
+        <file>DocumentsView.qml</file>
     </qresource>
 </RCC>

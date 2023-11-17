@@ -37,8 +37,7 @@ Column {
                    item.opacity = 0.0;
                }
            }
-           console.log(cardListModel.get(currentIndex).cardId)
-           CtrCards.onCardChoosed(cardListModel.get(currentIndex).cardId)
+           CtrCards.onCurrentCardUpdate(cardListModel.get(currentIndex).cardNumber)
        }
     }
 
@@ -60,7 +59,6 @@ Column {
          text: "Transfer to Card"
          width: 150
          onClicked: {
-            console.log("Transfer to Card button clicked")
             get_string.item.ok = function (str) { CtrCards.onTransfer(str) }
             get_string.item.no = function (str) {  }
             get_string.item.open()
@@ -72,7 +70,6 @@ Column {
          text: "Transfer to Bill"
          width: 150
          onClicked: {
-            console.log("Transfer to Bill button clicked")
             get_string.item.ok = function (str) { CtrCards.onTransfer(str) }
             get_string.item.no = function (str) {  }
             get_string.item.open()
@@ -136,7 +133,7 @@ Column {
             remove.enabled = true
 
             console.log("Add card button")
-            cardListModel.append({"cardId": "", "cardNumber": "", "balance": "", "isBlocked": false})
+            cardListModel.append({"cardNumber": "", "balance": "", "isBlocked": false})
             cardsView.currentIndex = cardListModel.count - 1
         }
     }
@@ -145,7 +142,7 @@ Column {
     Connections {
         target: CtrCards
         function onAddCard(id, number, balance, is_blocked) {
-            cardListModel.append({"cardId": id, "cardNumber": number, "balance": balance, "isBlocked": is_blocked})
+            cardListModel.append({"cardNumber": number, "balance": balance, "isBlocked": is_blocked})
         }
         function onRemoveCard(id) {
             for (var i = 0; i < cardListModel.count; ++i) {
@@ -154,6 +151,13 @@ Column {
                    break;
                }
            }
+        }
+        function onCardsCardsChanged(cards) {
+            cardListModel.clear()
+            for (var i = 0; i < cards.length; i++) {
+                var card = cards[i];
+                cardListModel.append({"cardNumber": card.number, "balance": card.value, "isBlocked": card.isBlocked});
+            }
         }
     }
 }
