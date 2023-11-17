@@ -68,7 +68,8 @@ public:
 public slots:
     void onCurrentCardUpdate(const QString newNumber);
 
-    void onTransfer(const QString &target);
+    void onCardTransfer(const QString &target);
+    void onBillTransfer(const QString &target);
 
 signals:
     void addCard(int id);

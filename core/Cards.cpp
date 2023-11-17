@@ -40,8 +40,14 @@ void CardsArray::onCurrentCardUpdate(const QString newNumber) {
     this->currentCardNumber = newNumber;
 }
 
-void CardsArray::onTransfer(const QString &target) {
+void CardsArray::onCardTransfer(const QString &target) {
     std::cout << "[backend] Transfer from card to card from " <<
         currentCardNumber.toStdString() <<
         " to " << target.toStdString() << std::endl;
+}
+
+void CardsArray::onBillTransfer(const QString &target) {
+    std::cout << "[backend] Transfer from card to bill from " <<
+              currentCardNumber.toStdString() <<
+              " to " << target.toStdString() << std::endl;
 }
