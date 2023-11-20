@@ -25,6 +25,7 @@ qt_add_executable(${ProjectName}
         core/Cards.hpp
         core/Bills.cpp
         core/Bills.hpp
+        core/History.hpp
 )
 
 qt_add_qml_module(${ProjectName}

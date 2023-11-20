@@ -26,6 +26,9 @@ Column {
             }
         }
         onCurrentIndexChanged: {
+           if (billListModel.count === 0) {
+               return;
+           }
            for (var i = 0; i < count; i++) {
                var item = itemAt(i);
                if (i === currentIndex) {
@@ -37,8 +40,7 @@ Column {
                    item.opacity = 0.0;
                }
            }
-           console.log(billListModel.get(currentIndex).billId)
-           CtrBills.onBillChoosed(billListModel.get(currentIndex).billId)
+           CtrBills.onCurrentBillUpdate(billListModel.get(currentIndex).billNumber)
        }
     }
 
@@ -60,8 +62,7 @@ Column {
          text: "Transfer to Bill"
          width: 150
          onClicked: {
-            console.log("Transfer to Bill button clicked")
-            get_string.item.ok = function (str) { CtrBills.onTransfer(str) }
+            get_string.item.ok = function (str) { CtrBills.onBillTransfer(str) }
             get_string.item.no = function (str) {  }
             get_string.item.open()
          }
@@ -73,8 +74,7 @@ Column {
          width: 150
          onClicked: {
             console.log("Block button clicked")
-            billListModel.get(billsView.currentIndex).isBlocked =
-                !billListModel.get(billsView.currentIndex).isBlocked
+            CtrBills.onBlocked(!billListModel.get(billsView.currentIndex).isBlocked)
          }
 
      }
@@ -85,6 +85,7 @@ Column {
          width: 150
          onClicked: {
             main_stack_view.push("History.qml")
+            CtrBills.onHistory(billListModel.get(billsView.currentIndex).billNumber)
             console.log("History button clicked")
          }
      }
@@ -101,13 +102,9 @@ Column {
                 remove.enabled = false
             }
 
-            else if (billListModel.currentIndex === 1 || (typeof el === 'undefined')) {
-                billsView.currentIndex = billsView.count - 1;
-            }
+            CtrBills.onRemoveBill(billListModel.get(billsView.currentIndex).billNumber)
 
             console.log("Delete bill button")
-            console.log(billListModel.currentIndex)
-            billListModel.remove(billsView.currentIndex)
         }
     }
 
@@ -121,8 +118,10 @@ Column {
             history.enabled = true
             remove.enabled = true
 
+            CtrBills.onAddBill()
+
             console.log("Add bill button")
-            billListModel.append({"billId": "", "billNumber": "", "balance": "", "isBlocked": false})
+
             billsView.currentIndex = billListModel.count - 1
         }
     }
@@ -130,16 +129,32 @@ Column {
 
     Connections {
         target: CtrBills
-        function onAddBill(id, number, balance, is_blocked) {
-            billListModel.append({"billId": id, "billNumber": number, "balance": balance, "isBlocked": is_blocked})
-        }
-        function onRemoveBill(id) {
-            for (var i = 0; i < billListModel.count; ++i) {
-               if (billListModel.get(i).id === id) {
-                   billListModel.remove(i);
-                   break;
-               }
-           }
+        function onBillsChanged(bills, saveCurrent) {
+            var index = billListModel.count
+            var currentIndex = billsView.currentIndex
+            billListModel.clear()
+            for (var i = 0; i < bills.length; i++) {
+                var bill = bills[i];
+                billListModel.append({"billNumber": bill.number,
+                                     "balance": String(bill.value),
+                                     "isBlocked": bill.isBlocked});
+            }
+            if (saveCurrent) {
+                billsView.currentIndex = currentIndex
+                return
+            }
+            if (billListModel.count < index) {
+                console.log("Update count - 1")
+                billsView.currentIndex = billListModel.count - 1
+            }
+            else if (index === 0) {
+                billsView.currentIndex = 0
+            }
+            else {
+                console.log("Update index - 1")
+                billsView.currentIndex = index - 1
+            }
+            console.log("Index " + billsView.currentIndex)
         }
     }
 }

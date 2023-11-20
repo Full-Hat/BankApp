@@ -16,6 +16,8 @@
 #include <exception>
 #include <memory>
 
+#include "History.hpp"
+
 /*!
  * @brief Manage one card instance
  *
@@ -51,30 +53,6 @@ public:
     [[nodiscard]]
     bool getIsBlocked() const { return isBlocked; };
     void setIsBlocked(bool isBlocked) { this->isBlocked = isBlocked; };
-};
-
-class History : public QObject {
-    Q_OBJECT
-
-public:
-    Q_PROPERTY(QString source READ getSource)
-    QString source;
-
-    Q_PROPERTY(QString target READ getTarget)
-    QString target;
-
-    Q_PROPERTY(int value READ getValue)
-    int value;
-
-public:
-    [[nodiscard]]
-    QString getSource() const { return source; }
-
-    [[nodiscard]]
-    QString getTarget() const { return target; };
-
-    [[nodiscard]]
-    int getValue() const { return value; }
 };
 
 class CardsArray : public QObject {

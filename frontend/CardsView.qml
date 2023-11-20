@@ -142,19 +142,6 @@ Column {
 
     Connections {
         target: CtrCards
-        function onAddCard(id, number, balance, is_blocked) {
-            cardListModel.append({"cardNumber": number,
-                                 "balance": balance,
-                                 "isBlocked": is_blocked})
-        }
-        function onRemoveCard(id) {
-            for (var i = 0; i < cardListModel.count; ++i) {
-               if (cardListModel.get(i).id === id) {
-                   cardListModel.remove(i);
-                   break;
-               }
-           }
-        }
         function onCardsCardsChanged(cards, saveCurrent) {
             var index = cardListModel.count
             var currentIndex = cardsView.currentIndex
