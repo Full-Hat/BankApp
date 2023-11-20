@@ -97,3 +97,17 @@ QList<QObject *> CardsArray::getHistory(const QString &target) const {
 
     return history;
 }
+
+void CardsArray::onRemoveCard(const QString &target) {
+    std::cout << "[backend] " << "card removed card " << target.toStdString() << std::endl;
+    std::ranges::remove_if(backend_cards, [&](std::shared_ptr<Card> el) { return el->getNumber() == target; });
+    backend_cards.pop_back();
+
+    emit cardsCardsChanged(getCards(), false);
+}
+
+void CardsArray::onAddCard() {
+    std::cout << "[backend] " << "card added" << std::endl;
+    backend_cards.push_back(std::make_shared<Card>("** jief", 10, false));
+    emit cardsCardsChanged(getCards(), false);
+}

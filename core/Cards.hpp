@@ -120,10 +120,11 @@ public slots:
 
     void onHistory(const QString &target);
 
+    void onRemoveCard(const QString &target);
+    void onAddCard();
+
     void onUpdate();
 signals:
-    void addCard(int id);
-    void removeCard(int id);
     void cardsCardsChanged(QList<QObject*> cards, bool saveCurrent);
     void updateHistory(QList<QObject*> history);
 };

@@ -114,13 +114,9 @@ Column {
                 remove.enabled = false
             }
 
-            else if (cardListModel.currentIndex === 1 || (typeof el === 'undefined')) {
-                cardsView.currentIndex = cardsView.count - 1;
-            }
+            CtrCards.onRemoveCard(cardListModel.get(cardsView.currentIndex).cardNumber)
 
             console.log("Delete card button")
-            console.log(cardListModel.currentIndex)
-            cardListModel.remove(cardsView.currentIndex)
         }
     }
 
@@ -135,8 +131,10 @@ Column {
             history.enabled = true
             remove.enabled = true
 
+            CtrCards.onAddCard()
+
             console.log("Add card button")
-            cardListModel.append({"cardNumber": "", "balance": "", "isBlocked": false})
+
             cardsView.currentIndex = cardListModel.count - 1
         }
     }
@@ -145,7 +143,9 @@ Column {
     Connections {
         target: CtrCards
         function onAddCard(id, number, balance, is_blocked) {
-            cardListModel.append({"cardNumber": number, "balance": balance, "isBlocked": is_blocked})
+            cardListModel.append({"cardNumber": number,
+                                 "balance": balance,
+                                 "isBlocked": is_blocked})
         }
         function onRemoveCard(id) {
             for (var i = 0; i < cardListModel.count; ++i) {
@@ -161,7 +161,9 @@ Column {
             cardListModel.clear()
             for (var i = 0; i < cards.length; i++) {
                 var card = cards[i];
-                cardListModel.append({"cardNumber": card.number, "balance": String(card.value), "isBlocked": card.isBlocked});
+                cardListModel.append({"cardNumber": card.number,
+                                     "balance": String(card.value),
+                                     "isBlocked": card.isBlocked});
             }
             if (saveCurrent) {
                 cardsView.currentIndex = currentIndex
