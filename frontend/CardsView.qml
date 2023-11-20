@@ -26,8 +26,6 @@ Column {
             }
         }
         onCurrentIndexChanged: {
-           console.log("index value " + currentIndex);
-           console.log("index handler " + cardListModel.get(0));
            if (cardListModel.count === 0) {
                return;
            }
@@ -98,6 +96,7 @@ Column {
          width: 150
          onClicked: {
             main_stack_view.push("History.qml")
+            CtrCards.onHistory(cardListModel.get(cardsView.currentIndex).cardNumber)
             console.log("History button clicked")
          }
      }
@@ -157,13 +156,10 @@ Column {
            }
         }
         function onCardsCardsChanged(cards, saveCurrent) {
-            console.log("Update card")
             var index = cardListModel.count
             var currentIndex = cardsView.currentIndex
             cardListModel.clear()
             for (var i = 0; i < cards.length; i++) {
-                console.log("Hello world ")
-                console.log(cards[i].number)
                 var card = cards[i];
                 cardListModel.append({"cardNumber": card.number, "balance": String(card.value), "isBlocked": card.isBlocked});
             }

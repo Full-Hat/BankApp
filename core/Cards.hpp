@@ -6,6 +6,9 @@
 
 #include <QObject>
 #include <QList>
+#include <QMap>
+#include <QQmlListProperty>
+#include <QQmlPropertyMap>
 
 #include <ranges>
 #include <algorithm>
@@ -50,6 +53,30 @@ public:
     void setIsBlocked(bool isBlocked) { this->isBlocked = isBlocked; };
 };
 
+class History : public QObject {
+    Q_OBJECT
+
+public:
+    Q_PROPERTY(QString source READ getSource)
+    QString source;
+
+    Q_PROPERTY(QString target READ getTarget)
+    QString target;
+
+    Q_PROPERTY(int value READ getValue)
+    int value;
+
+public:
+    [[nodiscard]]
+    QString getSource() const { return source; }
+
+    [[nodiscard]]
+    QString getTarget() const { return target; };
+
+    [[nodiscard]]
+    int getValue() const { return value; }
+};
+
 class CardsArray : public QObject {
     Q_OBJECT
 
@@ -61,7 +88,11 @@ protected:
     Q_PROPERTY(QString currentCardNumber READ getCardNumber WRITE setCardNumber)
     QString currentCardNumber;
 
+    QList<std::shared_ptr<History>> history;
+
 public:
+    using QML_MapList = QList<QMap<QString, QString>>;
+
     CardsArray(QObject *parent = nullptr);
 
     [[nodiscard]]
@@ -71,6 +102,10 @@ public:
     // Iterated through array to get pointers, need to be cached
     [[nodiscard]]
     QList<QObject*> getCards();
+
+    Q_INVOKABLE
+    [[nodiscard]]
+    QList<QObject*> getHistory(const QString &target) const;
 
     void printCards();
 
@@ -83,9 +118,12 @@ public slots:
     void onBillTransfer(const QString &target);
     void onBlocked(bool isBlocked);
 
+    void onHistory(const QString &target);
+
     void onUpdate();
 signals:
     void addCard(int id);
     void removeCard(int id);
     void cardsCardsChanged(QList<QObject*> cards, bool saveCurrent);
+    void updateHistory(QList<QObject*> history);
 };

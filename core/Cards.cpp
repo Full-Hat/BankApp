@@ -6,17 +6,6 @@
 
 #include <iostream>
 
-//void CardsArray::onCardChoosed(QString id) {
-//    int current_id = id.toInt();
-//
-//}
-//
-//void CardsArray::onTransfer(QString target_number) {
-//    std::cout << "Transfer from card to card from " <<
-//        currentCardNumber.toStdString() <<
-//        " to " << target_number.toStdString() << std::endl;
-//}
-
 std::shared_ptr<Card> CardsArray::getByNum(QString number) {
     auto res = std::ranges::find_if(backend_cards, [&](const std::shared_ptr<Card> &el) { return el->getNumber() == number; });
     if (res == backend_cards.cend()) {
@@ -61,11 +50,23 @@ void CardsArray::onBlocked(bool block) {
     emit cardsCardsChanged(getCards(), true);
 }
 
+void CardsArray::onHistory(const QString &target) {
+    std::cout << "[backend] Card history requested card " << target.toStdString() << std::endl;
+
+    emit updateHistory(getHistory(target));
+}
+
 CardsArray::CardsArray(QObject *parent) : QObject(parent) {
     Card *newCard = new Card(QString("** 3456"), 1000, false);
     backend_cards.push_back(std::shared_ptr<Card>(newCard));
     newCard = new Card(QString("** 23w"), 1000, false);
     backend_cards.push_back(std::shared_ptr<Card>(newCard));
+
+    History *newHistory = new History;
+    newHistory->source = "forum.qt.io";
+    newHistory->target = "Target 1";
+    newHistory->value = 10;
+    history.push_back(std::shared_ptr<History>(newHistory));
 
     newCard = backend_cards[0].get();
     std::cout << "ejfowopef" << ((Card*)getCards()[0])->getNumber().toStdString() << std::endl;
@@ -84,4 +85,15 @@ void CardsArray::printCards() {
         std::cout << "Number " << card->getNumber().toStdString() << std::endl;
     }
     std::cout << "~~~" << std::endl;
+}
+
+QList<QObject *> CardsArray::getHistory(const QString &target) const {
+    QList<QObject*> history;
+    history.reserve(this->history.size());
+
+    for (auto el : this->history) {
+        history.push_back(el.get());
+    }
+
+    return history;
 }

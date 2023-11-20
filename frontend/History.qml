@@ -13,6 +13,7 @@ Page {
      id: transactionListView
      anchors.fill: parent
      model: ListModel {
+         id: listModel
          ListElement { source: "forum.qt.io"; target: "Target 1"; value: "Value 1" }
          ListElement { source: "doc.qt.io"; target: "Target 2"; value: "Value 2" }
          // Add more transactions here
@@ -55,6 +56,18 @@ Page {
             }
          }
      }
+ }
+
+ Connections {
+    target: CtrCards
+    function onUpdateHistory(history) {
+        console.log(history.length);
+        listModel.clear()
+        for (var i = 0; i < history.length; i++) {
+            listModel.append({"source": history[i].source, "target": history[i].target, "value": String(history[i].value)})
+            console.log(history[i].source)
+        }
+    }
  }
  }
 
