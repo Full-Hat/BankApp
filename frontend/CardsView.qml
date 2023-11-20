@@ -26,6 +26,11 @@ Column {
             }
         }
         onCurrentIndexChanged: {
+           console.log("index value " + currentIndex);
+           console.log("index handler " + cardListModel.get(0));
+           if (cardListModel.count === 0) {
+               return;
+           }
            for (var i = 0; i < count; i++) {
                var item = itemAt(i);
                if (i === currentIndex) {
@@ -82,8 +87,7 @@ Column {
          width: 150
          onClicked: {
             console.log("Block button clicked")
-            cardListModel.get(cardsView.currentIndex).isBlocked =
-                !cardListModel.get(cardsView.currentIndex).isBlocked
+            CtrCards.onBlocked(!cardListModel.get(cardsView.currentIndex).isBlocked)
          }
 
      }
@@ -152,12 +156,33 @@ Column {
                }
            }
         }
-        function onCardsCardsChanged(cards) {
+        function onCardsCardsChanged(cards, saveCurrent) {
+            console.log("Update card")
+            var index = cardListModel.count
+            var currentIndex = cardsView.currentIndex
             cardListModel.clear()
             for (var i = 0; i < cards.length; i++) {
+                console.log("Hello world ")
+                console.log(cards[i].number)
                 var card = cards[i];
-                cardListModel.append({"cardNumber": card.number, "balance": card.value, "isBlocked": card.isBlocked});
+                cardListModel.append({"cardNumber": card.number, "balance": String(card.value), "isBlocked": card.isBlocked});
             }
+            if (saveCurrent) {
+                cardsView.currentIndex = currentIndex
+                return
+            }
+            if (cardListModel.count < index) {
+                console.log("Update count - 1")
+                cardsView.currentIndex = cardListModel.count - 1
+            }
+            else if (index === 0) {
+                cardsView.currentIndex = 0
+            }
+            else {
+                console.log("Update index - 1")
+                cardsView.currentIndex = index - 1
+            }
+            console.log("Index " + cardsView.currentIndex)
         }
     }
 }

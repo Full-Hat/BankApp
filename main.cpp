@@ -27,8 +27,6 @@ int main(int argc, char* argv[]) {
     CardsArray CardsController;
     qml_engine.rootContext()->setContextProperty("CtrCards", &CardsController);
 
-    //CardsController.addCard()
-
     Bills BillsController;
     qml_engine.rootContext()->setContextProperty("CtrBills", &BillsController);
 

@@ -8,6 +8,7 @@
 #include <QList>
 
 #include <ranges>
+#include <algorithm>
 #include <vector>
 #include <exception>
 #include <memory>
@@ -30,6 +31,12 @@ class Card : public QObject {
     bool isBlocked;
 
 public:
+    Card(QString number, size_t  value, bool isBlocked = false) {
+        this->number = number;
+        this->value = value;
+        this->isBlocked = isBlocked;
+    }
+
     [[nodiscard]]
     QString getNumber() const { return number; };
     void setNumber(QString number) { this->number = number; };
@@ -49,12 +56,14 @@ class CardsArray : public QObject {
 protected:
 
     Q_PROPERTY(QList<QObject*> cards READ getCards)
-    QList<std::shared_ptr<Card*>> backend_cards;
+    QList<std::shared_ptr<Card>> backend_cards;
 
     Q_PROPERTY(QString currentCardNumber READ getCardNumber WRITE setCardNumber)
     QString currentCardNumber;
 
 public:
+    CardsArray(QObject *parent = nullptr);
+
     [[nodiscard]]
     QString getCardNumber() const { return currentCardNumber; };
     void setCardNumber(const QString &cardNumber) { currentCardNumber = cardNumber; };
@@ -63,16 +72,20 @@ public:
     [[nodiscard]]
     QList<QObject*> getCards();
 
-    Card& getByNum(QString number);
+    void printCards();
+
+    std::shared_ptr<Card> getByNum(QString number);
 
 public slots:
     void onCurrentCardUpdate(const QString newNumber);
 
     void onCardTransfer(const QString &target);
     void onBillTransfer(const QString &target);
+    void onBlocked(bool isBlocked);
 
+    void onUpdate();
 signals:
     void addCard(int id);
     void removeCard(int id);
-    void cardsCardsChanged(QList<QObject*> cards);
+    void cardsCardsChanged(QList<QObject*> cards, bool saveCurrent);
 };

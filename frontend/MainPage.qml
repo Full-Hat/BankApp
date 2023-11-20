@@ -38,16 +38,6 @@ Rectangle {
 
         ListModel {
             id: cardListModel
-            ListElement {
-                cardNumber: "** 3456"
-                balance: "1000"
-                isBlocked: false
-            }
-            ListElement {
-                cardNumber: "** 23w"
-                balance: "1000"
-                isBlocked: false
-            }
             // Add more ListElements here for more cards
         }
 
@@ -77,6 +67,10 @@ Rectangle {
                 source: "qrc:/main/frontend/CardsView.qml"
 
                 anchors.horizontalCenter: parent.horizontalCenter
+
+                onLoaded: {
+                    CtrCards.onUpdate()
+                }
             }
         }
         Item {
