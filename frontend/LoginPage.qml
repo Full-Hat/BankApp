@@ -7,6 +7,11 @@ Rectangle {
     width: main_stack_view.width
     height: main_stack_view.height
 
+    FontLoader {
+        id: f
+        source: "fonts/sfpro.otf"
+    }
+
     Text {
         id: page_description
         y: 158
@@ -53,7 +58,7 @@ Rectangle {
         height: 72
         text: qsTr("Login")
         font.pointSize: 30
-        font.family: "Verdana"
+        font.family: f.name
         anchors.horizontalCenter: parent.horizontalCenter
         checkable: false
         onClicked: {
@@ -69,7 +74,7 @@ Rectangle {
         height: 72
         text: qsTr("Signup")
         font.pointSize: 30
-        font.family: "Verdana"
+        font.family: f.name
         anchors.horizontalCenter: parent.horizontalCenter
         checkable: false
         onClicked: {
@@ -84,7 +89,7 @@ Rectangle {
         width: 285
         height: 57
         color: "#0a7ea7"
-        text: qsTr("Don't have an accaunt?")
+        text: qsTr("Don't have an account?")
         font.pixelSize: 27
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter

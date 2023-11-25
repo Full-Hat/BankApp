@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <QQmlContext>
+#include <QFontDatabase>
 
 #include "core/Login.hpp"
 #include "core/Signup.hpp"
@@ -32,6 +33,10 @@ int main(int argc, char* argv[]) {
 
     // Load frontend
     qml_engine.load(QUrl("qrc:/main/frontend/Main.qml"));
+
+    int id = QFontDatabase::addApplicationFont(":/main/frontend/fonts/Markdown.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont monospace(family);
 
     if (qml_engine.rootObjects().isEmpty())
     {

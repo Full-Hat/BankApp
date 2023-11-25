@@ -69,7 +69,7 @@ Rectangle {
         height: 57
         color: "#0a7ea7"
         anchors.horizontalCenter: parent.horizontalCenter
-        text: qsTr("Already have an accaunt?")
+        text: qsTr("Already have an account?")
         font.pixelSize: 27
         horizontalAlignment: Text.AlignHCenter
         styleColor: "#000000"
