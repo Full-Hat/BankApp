@@ -32,23 +32,25 @@ qt_add_qml_module(${ProjectName}
         URI main
         VERSION 1.0
         QML_FILES
-            "frontend/LoginPage.qml"
-            "frontend/LoginPageCode.qml"
-            "frontend/Main.qml"
-            "frontend/PopUpWarning.qml"
-            "frontend/SignupPage.qml"
-            "frontend/PopUpInfo.qml"
-            "frontend/MainPage.qml"
-            "frontend/Card.qml"
-            "frontend/GetString.qml"
-            "frontend/History.qml"
-            "frontend/CardsView.qml"
-            "frontend/BillsView.qml"
-            "frontend/Bill.qml"
-            "frontend/KreditsView.qml"
-            "frontend/DocumentsView.qml"
+        "frontend/KreditsView.qml"
+        "frontend/LoginPageCode.qml"
+        "frontend/Card.qml"
+        "frontend/PopUpWarning.qml"
+        "frontend/LoginPage.qml"
+        "frontend/DocumentsView.qml"
+        "frontend/Main.qml"
+        "frontend/SignupPage.qml"
+        "frontend/Bill.qml"
+        "frontend/PopUpInfo.qml"
+        "frontend/History.qml"
+        "frontend/MainPage.qml"
+        "frontend/CardsView.qml"
+        "frontend/BillsView.qml"
+        "frontend/GetString.qml"
+
         RESOURCES
-            "frontend/images/card_background.png"
+        "frontend/images/card_background.png"
+        "frontend/images/card_background1.png"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )
