@@ -90,7 +90,7 @@ public:
     std::shared_ptr<Card> getByNum(QString number);
 
 public slots:
-    void onCurrentCardUpdate(const QString newNumber);
+    void onCurrentCardUpdate(const QString& newNumber);
 
     void onCardTransfer(const QString &target);
     void onBillTransfer(const QString &target);

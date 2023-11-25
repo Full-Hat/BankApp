@@ -1,20 +1,23 @@
-<RCC>
-    <qresource prefix="/frontend">
-        <file>LoginPage.qml</file>
-        <file>LoginPageCode.qml</file>
-        <file>Main.qml</file>
-        <file>PopUpWarning.qml</file>
-        <file>SignupPage.qml</file>
-        <file>PopUpInfo.qml</file>
-        <file>MainPage.qml</file>
-        <file>Card.qml</file>
-        <file>CardsView.qml</file>
-        <file>Bill.qml</file>
-        <file>BillsView.qml</file>
-        <file>card_background.png</file>
-        <file>GetString.qml</file>
-        <file>History.qml</file>
-        <file>KreditsView.qmlZ</file>
-        <file>DocumentsView.qml</file>
-    </qresource>
-</RCC>
+<RCC version="1.0">
+	<qresource prefix="">
+		<file>KreditsView.qml</file>
+		<file>LoginPageCode.qml</file>
+		<file>Card.qml</file>
+		<file>PopUpWarning.qml</file>
+		<file>LoginPage.qml</file>
+		<file>DocumentsView.qml</file>
+		<file>Main.qml</file>
+		<file>SignupPage.qml</file>
+		<file>Bill.qml</file>
+		<file>PopUpInfo.qml</file>
+		<file>History.qml</file>
+		<file>MainPage.qml</file>
+		<file>CardsView.qml</file>
+		<file>BillsView.qml</file>
+		<file>GetString.qml</file>
+	</qresource>
+	<qresource prefix="images">
+		<file>card_background.png</file>
+		<file>card_background1.png</file>
+	</qresource>
+	</RCC>

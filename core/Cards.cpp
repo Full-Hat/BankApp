@@ -8,7 +8,7 @@
 
 std::shared_ptr<Card> CardsArray::getByNum(QString number) {
     auto res = std::ranges::find_if(backend_cards, [&](const std::shared_ptr<Card> &el) { return el->getNumber() == number; });
-    if (res == backend_cards.cend()) {
+    if (res == backend_cards.end()) {
         throw std::invalid_argument("Wrong card number");
     }
 
@@ -24,7 +24,7 @@ QList<QObject *> CardsArray::getCards() {
     return qmlCards;
 }
 
-void CardsArray::onCurrentCardUpdate(const QString newNumber) {
+void CardsArray::onCurrentCardUpdate(const QString& newNumber) {
     std::cout << "[backend] " << "change card to " << newNumber.toStdString() << std::endl;
     this->currentCardNumber = newNumber;
 }
@@ -62,7 +62,7 @@ CardsArray::CardsArray(QObject *parent) : QObject(parent) {
     newCard = new Card(QString("** 23w"), 1000, false);
     backend_cards.push_back(std::shared_ptr<Card>(newCard));
 
-    History *newHistory = new History;
+    auto *newHistory = new History;
     newHistory->source = "forum.qt.io";
     newHistory->target = "Target 1";
     newHistory->value = 10;
@@ -81,26 +81,26 @@ void CardsArray::printCards() {
     std::cout << "Card data: " << std::endl;
     for (QObject* el : cards)
     {
-        Card *card = static_cast<Card*>(el);
+        Card *card = dynamic_cast<Card*>(el);
         std::cout << "Number " << card->getNumber().toStdString() << std::endl;
     }
     std::cout << "~~~" << std::endl;
 }
 
 QList<QObject *> CardsArray::getHistory(const QString &target) const {
-    QList<QObject*> history;
-    history.reserve(this->history.size());
+    QList<QObject*> history_obj;
+    history_obj.reserve(this->history.size());
 
-    for (auto el : this->history) {
-        history.push_back(el.get());
+    for (const auto& el : this->history) {
+        history_obj.push_back(el.get());
     }
 
-    return history;
+    return history_obj;
 }
 
 void CardsArray::onRemoveCard(const QString &target) {
     std::cout << "[backend] " << "card removed card " << target.toStdString() << std::endl;
-    std::ranges::remove_if(backend_cards, [&](std::shared_ptr<Card> el) { return el->getNumber() == target; });
+    std::ranges::remove_if(backend_cards, [&](const std::shared_ptr<Card>& el) { return el->getNumber() == target; });
     backend_cards.pop_back();
 
     emit cardsCardsChanged(getCards(), false);
