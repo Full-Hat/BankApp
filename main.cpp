@@ -11,8 +11,13 @@
 #include "core/Cards.hpp"
 #include "core/Bills.hpp"
 
+#include "backend/Api.hpp"
+
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
+//    backend::Api api;
+//    api.testConnection();
+    //exit(0);
     QQmlApplicationEngine qml_engine;
 
     // Set context
@@ -24,6 +29,9 @@ int main(int argc, char* argv[]) {
 
     Signup SignupController;
     qml_engine.rootContext()->setContextProperty("CtrSignup", &SignupController);
+
+    SignupCode SignupCodeController;
+    qml_engine.rootContext()->setContextProperty("CtrSignupCode", &SignupCodeController);
 
     CardsArray CardsController;
     qml_engine.rootContext()->setContextProperty("CtrCards", &CardsController);

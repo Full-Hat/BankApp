@@ -26,19 +26,32 @@ Rectangle {
         width: 372
         height: 53
         placeholderText: qsTr("enter login")
-        font.pixelSize: 30
+        font.pixelSize: 27
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         font.family: "Verdana"
     }
 
     TextField {
-        id: password_edit
+        id: email_edit
         y: 566
         width: 372
         height: 51
+        placeholderText: qsTr("enter email")
+        font.pixelSize: 27
+        horizontalAlignment: Text.AlignHCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.family: "Verdana"
+        font.styleName: "Condensed Regular"
+    }
+
+    TextField {
+        id: password_edit
+        y: 642
+        width: 372
+        height: 51
         placeholderText: qsTr("enter password")
-        font.pixelSize: 30
+        font.pixelSize: 27
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         font.family: "Verdana"
@@ -57,7 +70,7 @@ Rectangle {
         font.family: "Verdana"
         checkable: false
         onClicked: {
-            CtrSignup.OnSignup(login_edit.text, password_edit.text)
+            CtrSignup.OnSignup(login_edit.text, password_edit.text, email_edit.text)
         }
     }
 
@@ -95,8 +108,7 @@ Rectangle {
     Connections {
         target: CtrSignup
         function onSignupCorrect() {
-            popUpOk.item.localText = "Verify account and login!"
-            popUpOk.item.open()
+            main_stack_view.push("SignupPageCode.qml")
         }
         function onSignupFailed(description) {
             popUp.item.localText = description

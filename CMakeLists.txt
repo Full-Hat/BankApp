@@ -9,7 +9,7 @@ set(PROJECT_VERSION_MINOR 0)
 set(CMAKE_CXX_STANDARD 20)
 
 # Link QT6
-find_package(Qt6 COMPONENTS Core Quick Widgets Core5Compat REQUIRED)
+find_package(Qt6 COMPONENTS Core Quick Widgets Network Core5Compat REQUIRED)
 
 set(ProjectName BankApp)
 qt_standard_project_setup()
@@ -26,6 +26,9 @@ qt_add_executable(${ProjectName}
         core/Bills.cpp
         core/Bills.hpp
         core/History.hpp
+        backend/Api.cpp
+        backend/Api.hpp
+        core/User.cpp
 )
 
 qt_add_qml_module(${ProjectName}
@@ -40,6 +43,7 @@ qt_add_qml_module(${ProjectName}
         "frontend/DocumentsView.qml"
         "frontend/Main.qml"
         "frontend/SignupPage.qml"
+        "frontend/SignupPageCode.qml"
         "frontend/Bill.qml"
         "frontend/PopUpInfo.qml"
         "frontend/History.qml"
@@ -51,8 +55,8 @@ qt_add_qml_module(${ProjectName}
         RESOURCES
         "frontend/images/card_background.png"
         "frontend/images/card_background1.png"
-        "frontend/fonts/Markdown.ttf"
         "frontend/fonts/sfpro.otf"
+        "frontend/fonts/Markdown.ttf"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )
@@ -63,4 +67,4 @@ set_target_properties(${ProjectName} PROPERTIES
         MACOSX_BUNDLE TRUE
 )
 
-target_link_libraries(${ProjectName} PRIVATE Qt6::Core Qt6::Quick Qt6::Widgets Qt6::Core5Compat)
+target_link_libraries(${ProjectName} PRIVATE Qt6::Core Qt6::Quick Qt6::Widgets Qt6::Core5Compat Qt6::Network)
