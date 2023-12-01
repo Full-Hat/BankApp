@@ -62,6 +62,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         checkable: false
         onClicked: {
+            login_btn.enabled = false
             CtrLogin.OnLogin(login_edit.text, password_edit.text)
         }
     }
@@ -100,9 +101,11 @@ Rectangle {
     Connections {
         target: CtrLogin
         function onLoginCorrect() {
+            login_btn.enabled = true
             main_stack_view.push("LoginPageCode.qml")
         }
         function onLoginFailed(description) {
+            login_btn.enabled = true
             popUp.item.localText = description
             popUp.item.open()
         }

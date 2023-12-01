@@ -5,6 +5,8 @@
 
 #include <QObject>
 
+#include "backend/Api.hpp"
+
 class Login : public QObject {
     Q_OBJECT
 
@@ -16,6 +18,9 @@ signals:
     // Responses for login operation
     void loginCorrect();
     void loginFailed(QString Description);
+
+protected:
+    backend::Api m_backend;
 };
 
 class LoginCode : public QObject {
@@ -27,4 +32,7 @@ public slots:
 signals:
     void loginCorrect();
     void loginFailed(QString description);
+
+protected:
+    backend::Api m_backend;
 };

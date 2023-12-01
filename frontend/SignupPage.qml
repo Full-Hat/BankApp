@@ -70,6 +70,8 @@ Rectangle {
         font.family: "Verdana"
         checkable: false
         onClicked: {
+            signup_btn.enabled = false
+            login_btn.enabled = false
             CtrSignup.OnSignup(login_edit.text, password_edit.text, email_edit.text)
         }
     }
@@ -108,9 +110,13 @@ Rectangle {
     Connections {
         target: CtrSignup
         function onSignupCorrect() {
+            signup_btn.enabled = true
+            login_btn.enabled = true
             main_stack_view.push("SignupPageCode.qml")
         }
         function onSignupFailed(description) {
+            signup_btn.enabled = true
+            login_btn.enabled = true
             popUp.item.localText = description
             popUp.item.open()
         }

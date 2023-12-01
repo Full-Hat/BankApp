@@ -12,12 +12,13 @@ void Signup::OnSignup(QString Login, QString Password, QString Email) {
     std::cout << "User try to signup login [" << Login.toStdString() << "] password [" <<
         Password.toStdString() << "]" << std::endl;
 
-    auto res = m_backend.RegisterBegin(Login, Password, Email);
+    auto res = m_backend.RegisterBegin(Login, Email, Password);
     if (res.error_code != 200) {
         emit signupFailed(res.error_message);
         return;
     }
 
+    CurrentUser::Get().SetLogin(Login);
     // 200 -> Go to code entering
     emit signupCorrect();
     // code -> !correct -> error -> correct -> login
