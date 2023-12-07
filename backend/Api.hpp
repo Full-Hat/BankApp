@@ -9,6 +9,10 @@
 
 namespace backend {
 
+//QNetworkRequest GetDefaultHeader(QString &url) {
+//    return {};
+//}
+
 class Api : public QObject {
     Q_OBJECT
 public:
@@ -47,6 +51,75 @@ public:
 
     [[nodiscard]]
     resp_login_confirm LoginConfirm(const QString &login, const QString &code);
+
+    struct resp_accounts_get {
+        uint16_t code;
+
+        struct data {
+            QString name;
+            QString number;
+            size_t value;
+            bool isBlocked;
+        };
+        std::vector<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_accounts_get AccountsGet(const QString &token);
+
+    struct resp_accounts_add {
+        uint16_t code;
+    };
+
+    [[nodiscard]]
+    resp_accounts_add AccountsAdd(const QString &token, const QString &name);
+
+    struct resp_accounts_remove {
+        uint16_t code;
+    };
+
+    [[nodiscard]]
+    resp_accounts_remove AccountsRemove(const QString &number, const QString &token);
+
+    struct resp_cards_get {
+        uint16_t code;
+
+        struct data {
+            QString id;
+            QString number;
+            QString date;
+            bool isBlocked;
+        };
+        std::vector<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_cards_get CardsGet(const QString &token);
+
+    struct resp_cards_add {
+        uint16_t code;
+    };
+
+    [[nodiscard]]
+    resp_cards_add CardsAdd(const QString &token);
+
+    struct resp_cards_details_get {
+        uint16_t code;
+        QString number;
+        QString date;
+        QString cvv;
+        uint32_t value;
+    };
+
+    [[nodiscard]]
+    resp_cards_details_get CardsGetDetails(const QString &id, const QString &token);
+
+    struct resp_cards_remove {
+        uint16_t code;
+    };
+
+    [[nodiscard]]
+    resp_cards_remove CardsRemove(const QString &number, const QString &token);
 
 protected:
     QNetworkAccessManager *m_manager;

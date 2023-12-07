@@ -17,6 +17,8 @@
 #include <memory>
 
 #include "History.hpp"
+#include "backend/Api.hpp"
+#include "User.hpp"
 
 /*!
  * @brief Manage one card instance
@@ -34,6 +36,7 @@ class Card : public QObject {
     size_t value;
     Q_PROPERTY(bool isBlocked READ getIsBlocked WRITE setIsBlocked)
     bool isBlocked;
+    // Write
 
 public:
     Card(QString number, size_t  value, bool isBlocked = false) {
@@ -105,4 +108,7 @@ public slots:
 signals:
     void cardsCardsChanged(QList<QObject*> cards, bool saveCurrent);
     void updateHistory(QList<QObject*> history);
+
+protected:
+    backend::Api m_backend;
 };

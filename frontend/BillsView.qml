@@ -118,11 +118,13 @@ Column {
             history.enabled = true
             remove.enabled = true
 
-            CtrBills.onAddBill()
-
-            console.log("Add bill button")
-
-            billsView.currentIndex = billListModel.count - 1
+            get_string.item.ok = function (str) {
+                console.log("Add bill button")
+                CtrBills.onAddBill(str)
+                billsView.currentIndex = billListModel.count - 1
+            }
+            get_string.item.no = function (str) {  }
+            get_string.item.open()
         }
     }
     }

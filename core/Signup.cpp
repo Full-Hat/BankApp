@@ -35,5 +35,6 @@ void SignupCode::OnSignup(const QString &Code) {
     }
 
     CurrentUser::Get().SetToken(res.token);
+    std::cout << "Token " << CurrentUser::Get().GetToken().toStdString() << std::endl;
     emit signupCorrect();
 }

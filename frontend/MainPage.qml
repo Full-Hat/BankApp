@@ -43,18 +43,6 @@ Rectangle {
 
         ListModel {
             id: billListModel
-            ListElement {
-                billId: "1"
-                billNumber: "** 3456"
-                balance: "1000"
-                isBlocked: false
-            }
-            ListElement {
-                billId: "2"
-                billNumber: "** 23w"
-                balance: "1000"
-                isBlocked: false
-            }
             // Add more ListElements here for more cards
         }
 
@@ -83,6 +71,9 @@ Rectangle {
                 source: "qrc:/main/frontend/BillsView.qml"
 
                 anchors.horizontalCenter: parent.horizontalCenter
+                onLoaded: {
+                    CtrBills.onUpdate()
+                }
             }
         }
         Column {

@@ -10,6 +10,7 @@
 #include "core/Signup.hpp"
 #include "core/Cards.hpp"
 #include "core/Bills.hpp"
+#include "core/User.hpp"
 
 #include "backend/Api.hpp"
 
@@ -39,6 +40,7 @@ int main(int argc, char* argv[]) {
     Bills BillsController;
     qml_engine.rootContext()->setContextProperty("CtrBills", &BillsController);
 
+    CurrentUser::Get().SetToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJjcmF6eXRodHBsYXlAZ21haWwuY29tIiwianRpIjoiYjQxMTNkNjQtZTdmYS00Mzc3LWFiM2YtNDM1YmMyNDk3ZWFjIiwibmJmIjoxNzAxODAyMjczLCJleHAiOjE3MzMzMzgyNzMsImlhdCI6MTcwMTgwMjI3NH0.4XQ0OJB4Kv6_FKrfLHi7RmzYaZNeAgGs5orIdAmFSbc");
     // Load frontend
     qml_engine.load(QUrl("qrc:/main/frontend/Main.qml"));
 

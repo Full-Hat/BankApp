@@ -14,7 +14,8 @@ Window {
     StackView {
         id: main_stack_view
         anchors.fill: parent
-        initialItem: "LoginPage.qml"
+        //initialItem: "LoginPage.qml"
+        initialItem: "MainPage.qml"
 
         anchors.horizontalCenter: parent.horizontalCenter
     }

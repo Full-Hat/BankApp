@@ -17,8 +17,6 @@ void Api::testConnection() {
 
     QJsonObject json;
     json["login"] = "FullHat";
-    //json["email"] = "crazythtplay@gmail.com";
-    //json["password"] = "NotPassword";
     json["code"] = "57055";
 
     QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
@@ -176,5 +174,191 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
 
     return result;
 }
+
+    backend::Api::resp_accounts_get Api::AccountsGet(const QString &token) {
+        resp_accounts_get result;
+
+        QNetworkRequest req;
+        req.setUrl(QUrl(m_url_base + "accounts"));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        req.setRawHeader("Accept", "*/*");
+        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QNetworkReply *reply = m_manager->get(req);
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray jsonArray = json.array();
+
+        for(int i = 0; i < jsonArray.size(); i++) {
+            QJsonObject jsonObject = jsonArray[i].toObject();
+            resp_accounts_get::data data;
+            data.number = jsonObject["identifier"].toString();
+            data.name = jsonObject["name"].toString();
+            data.value = jsonObject["balance"].toInt();
+            data.isBlocked = jsonObject["isBlocked"].toBool();
+
+            result.datas.push_back(data);
+        }
+
+        // parse accounts;
+
+        return result;
+    }
+
+    Api::resp_accounts_add Api::AccountsAdd(const QString &token, const QString &name) {
+        Api::resp_accounts_add result;
+
+        QNetworkRequest req;
+        req.setUrl(QUrl(m_url_base + "accounts"));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        req.setRawHeader("Accept", "*/*");
+        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QJsonObject json;
+        json["name"] = name;
+        json["currency"] = "USD";
+        QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        return result;
+    }
+
+    Api::resp_accounts_remove Api::AccountsRemove(const QString &number, const QString &token) {
+        Api::resp_accounts_remove result;
+
+        QNetworkRequest req;
+        req.setUrl(QUrl(m_url_base + "accounts/" + number));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        req.setRawHeader("Accept", "*/*");
+        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QNetworkReply *reply = m_manager->deleteResource(req);
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        return result;
+    }
+
+    Api::resp_cards_get Api::CardsGet(const QString &token) {
+        Api::resp_cards_get result;
+
+        QNetworkRequest req;
+        req.setUrl(QUrl(m_url_base + "cards"));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        req.setRawHeader("Accept", "*/*");
+        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QNetworkReply *reply = m_manager->get(req);
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray jsonArray = json.array();
+
+        for(auto && i : jsonArray) {
+            QJsonObject jsonObject = i.toObject();
+            resp_cards_get::data data;
+            data.number = jsonObject["lastFourDigits"].toString();
+            data.id = jsonObject["hashId"].toString();
+            data.date = jsonObject["validityPeriod"].toString();
+            data.isBlocked = jsonObject["isBlocked"].toBool();
+
+            result.datas.push_back(data);
+        }
+
+        return result;
+    }
+
+    Api::resp_cards_add Api::CardsAdd(const QString &token) {
+        Api::resp_cards_add result;
+        QNetworkRequest req;
+        req.setUrl(QUrl(m_url_base + "cards"));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        req.setRawHeader("Accept", "*/*");
+        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QJsonObject json;
+        json["currency"] = "USD";
+        QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        return result;
+    }
+
+    Api::resp_cards_details_get Api::CardsGetDetails(const QString &id, const QString &token) {
+        Api::resp_cards_details_get result;
+
+        QNetworkRequest req;
+        req.setUrl(QUrl(m_url_base + "cards/" + id));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        req.setRawHeader("Accept", "*/*");
+        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QNetworkReply *reply = m_manager->get(req);
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray jsonArray = json.array();
+
+        QJsonObject jsonObject = json.object();
+        resp_cards_details_get data;
+        data.number = jsonObject["fullNumber"].toString();
+        data.date = jsonObject["validityPeriod"].toString();
+        data.cvv = jsonObject["cvv"].toString();
+        data.value = jsonObject["balance"].toInt();
+
+        return result;
+    }
+
+    Api::resp_cards_remove Api::CardsRemove(const QString &id, const QString &token) {
+        Api::resp_cards_remove result;
+
+        QNetworkRequest req;
+        req.setUrl(QUrl(m_url_base + "cards/" + id));
+        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        req.setRawHeader("Accept", "*/*");
+        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QNetworkReply *reply = m_manager->deleteResource(req);
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+        return result;
+    }
+
+    // Получение кредита процент срок
+    // Выплата кредита
 
 } // backend

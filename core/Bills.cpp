@@ -16,6 +16,18 @@ std::shared_ptr<Bill> Bills::getByNum(QString number) {
 }
 
 QList<QObject *> Bills::getBills() {
+    auto res = m_backend.AccountsGet(CurrentUser::Get().GetToken());
+    if (res.code != 200) {
+        return {};
+    }
+    backend_bills.clear();
+    for(const auto& data : res.datas) {
+        std::shared_ptr<Bill> bill = std::make_shared<Bill>(data.number, data.value, data.isBlocked);
+        backend_bills.append(bill);
+    }
+
+    // to Bills QList<std::shared_ptr<Bill>>
+    //std::cout << res.code << std::endl;
     QList<QObject *> qmlBills(backend_bills.size());
     for (int i = 0; i < backend_bills.size(); ++i) {
         qmlBills[i] = static_cast<QObject*>(backend_bills[i].get());
@@ -50,19 +62,11 @@ void Bills::onHistory(const QString &target) {
 }
 
 Bills::Bills(QObject *parent) : QObject(parent) {
-    Bill *newBill = new Bill(QString("** 3456"), 1000, false);
-    backend_bills.push_back(std::shared_ptr<Bill>(newBill));
-    newBill = new Bill(QString("** 23w"), 1000, false);
-    backend_bills.push_back(std::shared_ptr<Bill>(newBill));
-
     History *newHistory = new History;
     newHistory->source = "forum.qt.io";
     newHistory->target = "Target 1";
     newHistory->value = 10;
     history.push_back(std::shared_ptr<History>(newHistory));
-
-    newBill = backend_bills[0].get();
-    std::cout << "ejfowopef" << ((Bill*)getBills()[0])->getNumber().toStdString() << std::endl;
 }
 
 void Bills::printBills() {
@@ -89,14 +93,18 @@ QList<QObject *> Bills::getHistory(const QString &target) const {
 
 void Bills::onRemoveBill(const QString &target) {
     std::cout << "[backend] " << "bill removed bill " << target.toStdString() << std::endl;
-    std::ranges::remove_if(backend_bills, [&](std::shared_ptr<Bill> el) { return el->getNumber() == target; });
-    backend_bills.pop_back();
+
+    m_backend.AccountsRemove(target, CurrentUser::Get().GetToken());
 
     emit billsChanged(getBills(), false);
 }
 
-void Bills::onAddBill() {
+void Bills::onAddBill(const QString &name) {
     std::cout << "[backend] " << "bill added" << std::endl;
-    backend_bills.push_back(std::make_shared<Bill>("** jief", 10, false));
+    m_backend.AccountsAdd(CurrentUser::Get().GetToken(), name);
+    emit billsChanged(getBills(), false);
+}
+
+void Bills::onUpdate() {
     emit billsChanged(getBills(), false);
 }

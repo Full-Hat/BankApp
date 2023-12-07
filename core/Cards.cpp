@@ -16,6 +16,16 @@ std::shared_ptr<Card> CardsArray::getByNum(QString number) {
 }
 
 QList<QObject *> CardsArray::getCards() {
+    auto res = m_backend.CardsGet(CurrentUser::Get().GetToken());
+    if (res.code != 200) {
+        return {};
+    }
+    backend_cards.clear();
+    for(const auto& data : res.datas) {
+        std::shared_ptr<Card> bill = std::make_shared<Card>(data.number, 0, data.isBlocked);
+        backend_cards.append(bill);
+    }
+
     QList<QObject *> qmlCards(backend_cards.size());
     for (int i = 0; i < backend_cards.size(); ++i) {
         qmlCards[i] = static_cast<QObject*>(backend_cards[i].get());
@@ -67,9 +77,6 @@ CardsArray::CardsArray(QObject *parent) : QObject(parent) {
     newHistory->target = "Target 1";
     newHistory->value = 10;
     history.push_back(std::shared_ptr<History>(newHistory));
-
-    newCard = backend_cards[0].get();
-    std::cout << "ejfowopef" << ((Card*)getCards()[0])->getNumber().toStdString() << std::endl;
 }
 
 void CardsArray::onUpdate() {
@@ -100,14 +107,14 @@ QList<QObject *> CardsArray::getHistory(const QString &target) const {
 
 void CardsArray::onRemoveCard(const QString &target) {
     std::cout << "[backend] " << "card removed card " << target.toStdString() << std::endl;
-    std::ranges::remove_if(backend_cards, [&](const std::shared_ptr<Card>& el) { return el->getNumber() == target; });
-    backend_cards.pop_back();
+
+    m_backend.CardsRemove(target, CurrentUser::Get().GetToken());
 
     emit cardsCardsChanged(getCards(), false);
 }
 
 void CardsArray::onAddCard() {
     std::cout << "[backend] " << "card added" << std::endl;
-    backend_cards.push_back(std::make_shared<Card>("** jief", 10, false));
+    m_backend.CardsAdd(CurrentUser::Get().GetToken());
     emit cardsCardsChanged(getCards(), false);
 }

@@ -7,6 +7,8 @@
 #include <QObject>
 
 #include "History.hpp"
+#include "backend/Api.hpp"
+#include "User.hpp"
 
 /*!
  * @brief Manage one bill instance
@@ -86,8 +88,13 @@ public slots:
     void onHistory(const QString &target);
 
     void onRemoveBill(const QString &target);
-    void onAddBill();
+    void onAddBill(const QString &name);
+
+    void onUpdate();
 signals:
     void billsChanged(QList<QObject*> cards, bool saveCurrent);
     void updateHistory(QList<QObject*> history);
+
+protected:
+    backend::Api m_backend;
 };

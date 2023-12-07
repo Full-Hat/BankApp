@@ -43,6 +43,7 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         font.family: "Verdana"
         font.styleName: "Condensed Regular"
+        validator: RegularExpressionValidator { regularExpression: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/ }
     }
 
     TextField {
