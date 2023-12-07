@@ -9,15 +9,70 @@
 
 namespace backend {
 
-//QNetworkRequest GetDefaultHeader(QString &url) {
-//    return {};
-//}
-
 class Api : public QObject {
     Q_OBJECT
 public:
     Api();
     void testConnection();
+
+    struct Request {
+        Request() {
+            m_manager = new QNetworkAccessManager;
+            m_request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+            m_request.setRawHeader("Accept", "*/*");
+        }
+
+        ~Request() {
+            delete m_manager;
+        }
+
+        virtual QNetworkReply* send() = 0;
+        void SetUrl(const QString &url) {
+            m_request.setUrl(QUrl(url));
+        }
+
+        QNetworkRequest m_request;
+        QNetworkAccessManager *m_manager;
+        QJsonObject m_json;
+    };
+
+    struct Post : public Request {
+        virtual QNetworkReply* send() override {
+            QNetworkReply *reply = m_manager->post(m_request, QJsonDocument(m_json).toJson());
+
+            QEventLoop loop;
+            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+            loop.exec();
+
+            return reply;
+        }
+    };
+
+    struct Get : public Request {
+        virtual QNetworkReply* send() override {
+            QNetworkReply *reply = m_manager->get(m_request);
+
+            QEventLoop loop;
+            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+            loop.exec();
+
+            return reply;
+        }
+    };
+
+    struct Delete : public Request {
+        virtual QNetworkReply* send() override {
+            QNetworkReply *reply = m_manager->deleteResource(m_request);
+
+            QEventLoop loop;
+            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+            loop.exec();
+
+            return reply;
+        }
+    };
+
+    QNetworkRequest GetDefaultHeader();
 
     struct resp_register_beg {
         QString error_message;
@@ -67,19 +122,11 @@ public:
     [[nodiscard]]
     resp_accounts_get AccountsGet(const QString &token);
 
-    struct resp_accounts_add {
-        uint16_t code;
-    };
+    [[nodiscard]]
+    uint16_t AccountsAdd(const QString &token, const QString &name);
 
     [[nodiscard]]
-    resp_accounts_add AccountsAdd(const QString &token, const QString &name);
-
-    struct resp_accounts_remove {
-        uint16_t code;
-    };
-
-    [[nodiscard]]
-    resp_accounts_remove AccountsRemove(const QString &number, const QString &token);
+    uint16_t AccountsRemove(const QString &number, const QString &token);
 
     struct resp_cards_get {
         uint16_t code;
@@ -96,12 +143,8 @@ public:
     [[nodiscard]]
     resp_cards_get CardsGet(const QString &token);
 
-    struct resp_cards_add {
-        uint16_t code;
-    };
-
     [[nodiscard]]
-    resp_cards_add CardsAdd(const QString &token);
+    uint16_t CardsAdd(const QString &token);
 
     struct resp_cards_details_get {
         uint16_t code;
@@ -114,12 +157,8 @@ public:
     [[nodiscard]]
     resp_cards_details_get CardsGetDetails(const QString &id, const QString &token);
 
-    struct resp_cards_remove {
-        uint16_t code;
-    };
-
     [[nodiscard]]
-    resp_cards_remove CardsRemove(const QString &number, const QString &token);
+    uint16_t CardsRemove(const QString &number, const QString &token);
 
 protected:
     QNetworkAccessManager *m_manager;

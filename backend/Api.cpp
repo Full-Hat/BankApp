@@ -39,21 +39,14 @@ Api::Api() {
 Api::resp_register_beg Api::RegisterBegin(const QString &login, const QString &email, const QString &password) {
     Api::resp_register_beg result;
 
-    QNetworkRequest req;
-    req.setUrl(QUrl(m_url_base + "register/begin"));
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    req.setRawHeader("Accept", "*/*");
+    Post req;
+    req.SetUrl(m_url_base + "register/begin");
 
-    QJsonObject json;
-    json["login"] = login;
-    json["email"] = email;
-    json["password"] = password;
+    req.m_json["login"] = login;
+    req.m_json["email"] = email;
+    req.m_json["password"] = password;
 
-    QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
-
-    QEventLoop loop;
-    QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+    auto reply = req.send();
 
     result.error_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     auto doc = QJsonDocument::fromJson(reply->readAll());
@@ -74,20 +67,13 @@ Api::resp_register_beg Api::RegisterBegin(const QString &login, const QString &e
 Api::resp_register_confirm Api::RegisterConfirm(const QString &login, const QString &code) {
     Api::resp_register_confirm result;
 
-    QNetworkRequest req;
-    req.setUrl(QUrl(m_url_base + "register/confirm"));
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    req.setRawHeader("Accept", "*/*");
+    Post req;
+    req.SetUrl(m_url_base + "register/confirm");
 
-    QJsonObject json;
-    json["login"] = login;
-    json["code"] = code;
+    req.m_json["login"] = login;
+    req.m_json["code"] = code;
 
-    QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
-
-    QEventLoop loop;
-    QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+    auto reply = req.send();
 
     result.error_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     auto doc = QJsonDocument::fromJson(reply->readAll());
@@ -109,20 +95,13 @@ Api::resp_register_confirm Api::RegisterConfirm(const QString &login, const QStr
 Api::resp_login_beg Api::LoginBegin(const QString &login, const QString &password) {
     Api::resp_login_beg result;
 
-    QNetworkRequest req;
-    req.setUrl(QUrl(m_url_base + "login/begin"));
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    req.setRawHeader("Accept", "*/*");
+    Post req;
+    req.SetUrl(m_url_base + "login/begin");
 
-    QJsonObject json;
-    json["login"] = login;
-    json["password"] = password;
+    req.m_json["login"] = login;
+    req.m_json["password"] = password;
 
-    QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
-
-    QEventLoop loop;
-    QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+    auto reply = req.send();
 
     result.error_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     auto doc = QJsonDocument::fromJson(reply->readAll());
@@ -143,20 +122,14 @@ Api::resp_login_beg Api::LoginBegin(const QString &login, const QString &passwor
 Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &code) {
     Api::resp_login_confirm result;
 
-    QNetworkRequest req;
-    req.setUrl(QUrl(m_url_base + "login/confirm"));
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    req.setRawHeader("Accept", "*/*");
+    Post req;
+    req.SetUrl(m_url_base + "login/confirm");
 
     QJsonObject json;
     json["login"] = login;
     json["code"] = code;
 
-    QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
-
-    QEventLoop loop;
-    QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+    auto reply = req.send();
 
     result.error_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     auto doc = QJsonDocument::fromJson(reply->readAll());
@@ -178,23 +151,18 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
     backend::Api::resp_accounts_get Api::AccountsGet(const QString &token) {
         resp_accounts_get result;
 
-        QNetworkRequest req;
-        req.setUrl(QUrl(m_url_base + "accounts"));
-        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        req.setRawHeader("Accept", "*/*");
-        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+        Get req;
+        req.SetUrl(m_url_base + "accounts");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        QNetworkReply *reply = m_manager->get(req);
-
-        QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        loop.exec();
+        auto reply = req.send();
 
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
         auto json = QJsonDocument::fromJson(reply->readAll());
         QJsonArray jsonArray = json.array();
 
+        // parse accounts;
         for(int i = 0; i < jsonArray.size(); i++) {
             QJsonObject jsonObject = jsonArray[i].toObject();
             resp_accounts_get::data data;
@@ -206,68 +174,40 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
             result.datas.push_back(data);
         }
 
-        // parse accounts;
-
         return result;
     }
 
-    Api::resp_accounts_add Api::AccountsAdd(const QString &token, const QString &name) {
-        Api::resp_accounts_add result;
+    uint16_t Api::AccountsAdd(const QString &token, const QString &name) {
+        Post req;
+        req.SetUrl(m_url_base + "accounts");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        QNetworkRequest req;
-        req.setUrl(QUrl(m_url_base + "accounts"));
-        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        req.setRawHeader("Accept", "*/*");
-        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+        req.m_json["name"] = name;
+        req.m_json["currency"] = "USD";
 
-        QJsonObject json;
-        json["name"] = name;
-        json["currency"] = "USD";
-        QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
+        auto reply = req.send();
 
-        QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        loop.exec();
-
-        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
-
-        return result;
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
-    Api::resp_accounts_remove Api::AccountsRemove(const QString &number, const QString &token) {
-        Api::resp_accounts_remove result;
+    uint16_t Api::AccountsRemove(const QString &number, const QString &token) {
+        Delete req;
+        req.SetUrl(m_url_base + "accounts/" + number);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        QNetworkRequest req;
-        req.setUrl(QUrl(m_url_base + "accounts/" + number));
-        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        req.setRawHeader("Accept", "*/*");
-        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+        auto reply = req.send();
 
-        QNetworkReply *reply = m_manager->deleteResource(req);
-
-        QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        loop.exec();
-
-        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
-
-        return result;
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
     Api::resp_cards_get Api::CardsGet(const QString &token) {
         Api::resp_cards_get result;
 
-        QNetworkRequest req;
-        req.setUrl(QUrl(m_url_base + "cards"));
-        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        req.setRawHeader("Accept", "*/*");
-        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+        Get req;
+        req.SetUrl(m_url_base + "cards");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        QNetworkReply *reply = m_manager->get(req);
-
-        QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        loop.exec();
+        auto reply = req.send();
 
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
@@ -288,41 +228,26 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return result;
     }
 
-    Api::resp_cards_add Api::CardsAdd(const QString &token) {
-        Api::resp_cards_add result;
-        QNetworkRequest req;
-        req.setUrl(QUrl(m_url_base + "cards"));
-        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        req.setRawHeader("Accept", "*/*");
-        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+    uint16_t Api::CardsAdd(const QString &token) {
+        Post req;
+        req.SetUrl(m_url_base + "cards");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        QJsonObject json;
-        json["currency"] = "USD";
-        QNetworkReply *reply = m_manager->post(req, QJsonDocument(json).toJson());
+        req.m_json["currency"] = "USD";
 
-        QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        loop.exec();
+        auto reply = req.send();
 
-        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
-
-        return result;
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
     Api::resp_cards_details_get Api::CardsGetDetails(const QString &id, const QString &token) {
         Api::resp_cards_details_get result;
 
-        QNetworkRequest req;
-        req.setUrl(QUrl(m_url_base + "cards/" + id));
-        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        req.setRawHeader("Accept", "*/*");
-        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+        Get req;
+        req.SetUrl(m_url_base + "cards/" + id);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        QNetworkReply *reply = m_manager->get(req);
-
-        QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        loop.exec();
+        auto reply = req.send();
 
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
@@ -339,23 +264,14 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return result;
     }
 
-    Api::resp_cards_remove Api::CardsRemove(const QString &id, const QString &token) {
-        Api::resp_cards_remove result;
+    uint16_t Api::CardsRemove(const QString &number, const QString &token) {
+        Delete req;
+        req.SetUrl(m_url_base + "cards/" + number);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        QNetworkRequest req;
-        req.setUrl(QUrl(m_url_base + "cards/" + id));
-        req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        req.setRawHeader("Accept", "*/*");
-        req.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+        auto reply = req.send();
 
-        QNetworkReply *reply = m_manager->deleteResource(req);
-
-        QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        loop.exec();
-
-        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
-        return result;
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
     // Получение кредита процент срок
