@@ -82,7 +82,32 @@ void Bills::printBills() {
     std::cout << "~~~" << std::endl;
 }
 
-QList<QObject *> Bills::getHistory(const QString &target) const {
+QList<QObject *> Bills::getHistory(const QString &target) {
+    auto res = m_backend.History(CurrentUser::Get().GetToken());
+    assert(res.code == 200);
+
+    history.clear();
+    for (const auto &el : res.datas) {
+        // Check filter
+        auto current_number = this->getByNum(currentBillNumber)->getNumber();
+        if (el.source != current_number && el.target != current_number) {
+            continue;
+        }
+
+        history.push_back(std::make_shared<History>());
+        auto &row = history.last();
+        row->source = el.source;
+        row->target = el.target;
+        row->value = el.value;
+        row->date = el.date;
+    }
+
+    QList<QObject*> history_obj;
+    history_obj.reserve(this->history.size());
+
+    for (const auto& el : this->history) {
+        history_obj.push_back(el.get());
+    }
     QList<QObject*> history;
     history.reserve(this->history.size());
 

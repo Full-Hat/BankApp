@@ -73,7 +73,7 @@ public:
 
     Q_INVOKABLE
     [[nodiscard]]
-    QList<QObject*> getHistory(const QString &target) const;
+    QList<QObject*> getHistory(const QString &target);
 
     void printBills();
 
@@ -96,5 +96,5 @@ signals:
     void updateHistory(QList<QObject*> history);
 
 protected:
-    backend::Api m_backend;
+    mutable backend::Api m_backend;
 };
