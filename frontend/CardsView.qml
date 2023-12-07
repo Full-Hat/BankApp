@@ -113,6 +113,16 @@ Column {
             }
         }
         Button {
+            id: details
+
+            text: "Details"
+            width: 150
+
+            onClicked: {
+                CtrCards.onDetails()
+            }
+        }
+        Button {
             id: remove
 
             text: "Remove card"
@@ -180,7 +190,18 @@ Column {
             }
                 console.log("Index " + cardsView.currentIndex);
         }
+        function onCardsDetails(code, number, date, cvv, value) {
+            popUp.item.localText = number + " " + date + "\nCVV " + cvv + "\nBalance " + value.toString();
+            popUp.item.open();
+        }
 
         target: CtrCards
+    }
+    Loader {
+        id: popUp
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "qrc:/main/frontend/PopUpInfo.qml"
+        y: parent.height * 0.5
     }
 }

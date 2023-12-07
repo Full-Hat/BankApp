@@ -72,6 +72,18 @@ public:
         }
     };
 
+    struct Put : public Request {
+        virtual QNetworkReply* send() override {
+            QNetworkReply *reply = m_manager->put(m_request, QJsonDocument(m_json).toJson());
+
+            QEventLoop loop;
+            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+            loop.exec();
+
+            return reply;
+        }
+    };
+
     QNetworkRequest GetDefaultHeader();
 
     struct resp_register_beg {
@@ -159,6 +171,12 @@ public:
 
     [[nodiscard]]
     uint16_t CardsRemove(const QString &number, const QString &token);
+
+    [[nodiscard]]
+    uint16_t AccountBlock(const QString &id, const QString &token);
+
+    [[nodiscard]]
+    uint16_t CardsBlock(const QString &id, const QString &token);
 
 protected:
     QNetworkAccessManager *m_manager;

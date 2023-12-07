@@ -51,7 +51,10 @@ void Bills::onBillTransfer(const QString &target) {
 void Bills::onBlocked(bool block) {
     std::cout << "[backend] " << (block ? "Block" : "Unblock") << " bill " <<
               currentBillNumber.toStdString() << std::endl;
-    this->getByNum(currentBillNumber)->setIsBlocked(block);
+
+    auto code = m_backend.AccountBlock(this->getByNum(currentBillNumber)->getNumber(), CurrentUser::Get().GetToken());
+    assert(code == 200);
+
     emit billsChanged(getBills(), true);
 }
 
@@ -94,7 +97,8 @@ QList<QObject *> Bills::getHistory(const QString &target) const {
 void Bills::onRemoveBill(const QString &target) {
     std::cout << "[backend] " << "bill removed bill " << target.toStdString() << std::endl;
 
-    m_backend.AccountsRemove(target, CurrentUser::Get().GetToken());
+    auto code = m_backend.AccountsRemove(target, CurrentUser::Get().GetToken());
+    assert(code == 200);
 
     emit billsChanged(getBills(), false);
 }

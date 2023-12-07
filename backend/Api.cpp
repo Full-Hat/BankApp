@@ -255,11 +255,10 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         QJsonArray jsonArray = json.array();
 
         QJsonObject jsonObject = json.object();
-        resp_cards_details_get data;
-        data.number = jsonObject["fullNumber"].toString();
-        data.date = jsonObject["validityPeriod"].toString();
-        data.cvv = jsonObject["cvv"].toString();
-        data.value = jsonObject["balance"].toInt();
+        result.number = jsonObject["number"].toString();
+        result.date = jsonObject["validityPeriod"].toString();
+        result.cvv = jsonObject["cvv"].toString();
+        result.value = jsonObject["balance"].toInt();
 
         return result;
     }
@@ -267,6 +266,26 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
     uint16_t Api::CardsRemove(const QString &number, const QString &token) {
         Delete req;
         req.SetUrl(m_url_base + "cards/" + number);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    uint16_t Api::AccountBlock(const QString &id, const QString &token) {
+        Put req;
+        req.SetUrl(m_url_base + "accounts/flip-block-state/" + id);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    uint16_t Api::CardsBlock(const QString &id, const QString &token) {
+        Put req;
+        req.SetUrl(m_url_base + "cards/flip-block-state/" + id);
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
