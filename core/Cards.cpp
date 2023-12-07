@@ -22,7 +22,7 @@ QList<QObject *> CardsArray::getCards() {
     }
     backend_cards.clear();
     for(const auto& data : res.datas) {
-        std::shared_ptr<Card> bill = std::make_shared<Card>(data.number, 0, data.isBlocked);
+        std::shared_ptr<Card> bill = std::make_shared<Card>(data.id, data.number, data.date, data.isBlocked);
         backend_cards.append(bill);
     }
 
@@ -56,7 +56,10 @@ void CardsArray::onBillTransfer(const QString &target) {
 void CardsArray::onBlocked(bool block) {
     std::cout << "[backend] " << (block ? "Block" : "Unblock") << " card " <<
         currentCardNumber.toStdString() << std::endl;
-    this->getByNum(currentCardNumber)->setIsBlocked(block);
+
+    auto code = m_backend.CardsBlock(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+    assert(code == 200);
+
     emit cardsCardsChanged(getCards(), true);
 }
 
@@ -67,11 +70,6 @@ void CardsArray::onHistory(const QString &target) {
 }
 
 CardsArray::CardsArray(QObject *parent) : QObject(parent) {
-    Card *newCard = new Card(QString("** 3456"), 1000, false);
-    backend_cards.push_back(std::shared_ptr<Card>(newCard));
-    newCard = new Card(QString("** 23w"), 1000, false);
-    backend_cards.push_back(std::shared_ptr<Card>(newCard));
-
     auto *newHistory = new History;
     newHistory->source = "forum.qt.io";
     newHistory->target = "Target 1";
@@ -108,7 +106,11 @@ QList<QObject *> CardsArray::getHistory(const QString &target) const {
 void CardsArray::onRemoveCard(const QString &target) {
     std::cout << "[backend] " << "card removed card " << target.toStdString() << std::endl;
 
-    m_backend.CardsRemove(target, CurrentUser::Get().GetToken());
+    auto id = std::find_if(backend_cards.begin(), backend_cards.end(), [&](const std::shared_ptr<Card> &c) {
+        return c->getNumber() == target;
+    })->get()->getId();
+    auto code = m_backend.CardsRemove(id, CurrentUser::Get().GetToken());
+    assert(code == 200);
 
     emit cardsCardsChanged(getCards(), false);
 }
@@ -117,4 +119,11 @@ void CardsArray::onAddCard() {
     std::cout << "[backend] " << "card added" << std::endl;
     m_backend.CardsAdd(CurrentUser::Get().GetToken());
     emit cardsCardsChanged(getCards(), false);
+}
+
+void CardsArray::onDetails() {
+    auto id = this->getByNum(currentCardNumber)->getId();
+    auto result = m_backend.CardsGetDetails(id, CurrentUser::Get().GetToken());
+
+    emit cardsDetails(result.code, result.number, result.date, result.cvv, result.value);
 }
