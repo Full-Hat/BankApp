@@ -92,7 +92,26 @@ void CardsArray::printCards() {
     std::cout << "~~~" << std::endl;
 }
 
-QList<QObject *> CardsArray::getHistory(const QString &target) const {
+QList<QObject *> CardsArray::getHistory(const QString &target) {
+    auto res = m_backend.History(CurrentUser::Get().GetToken());
+    assert(res.code == 200);
+
+    history.clear();
+    for (auto el : res.datas) {
+        auto res = m_backend.CardsGetDetails(getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+        // Check filter
+        if (el.source != res.number && el.target != res.number) {
+            continue;
+        }
+
+        history.push_back(std::make_shared<History>());
+        auto &row = history.last();
+        row->source = el.source;
+        row->target = el.target;
+        row->value = el.value;
+        row->date = el.date;
+    }
+
     QList<QObject*> history_obj;
     history_obj.reserve(this->history.size());
 

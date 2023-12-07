@@ -2,93 +2,121 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 
 Page {
- id: transactionHistoryPage
- title: "Transaction History"
+    id: transactionHistoryPage
 
- ScrollView {
- id: transactionScrollView
- anchors.fill: parent
+    title: "Transaction History"
 
- ListView {
-     id: transactionListView
-     anchors.fill: parent
-     model: ListModel {
-         id: listModel
-         // Add more transactions here
-     }
-     delegate: Rectangle {
-         width: transactionListView.width
-         height: 50
-         color: index % 2 === 0 ? "white" : "lightgray" // Alternate row colors
+    ScrollView {
+        id: transactionScrollView
 
-         Row {
-            width: parent.width
-            spacing: 10
-            y: parent.height / 2 - 10
+        anchors.fill: parent
 
-            Column {
-               width: parent.width / 3
-               Text {
-                text: model.source
-                anchors.horizontalCenter: parent.horizontalCenter
-                verticalAlignment: Text.AlignVCenter
-               }
+        ListView {
+            id: transactionListView
+
+            anchors.fill: parent
+
+            delegate: Rectangle {
+                color: index % 2 === 0 ? "white" : "lightgray" // Alternate row colors
+
+                height: 50
+                width: transactionListView.width
+
+                Row {
+                    spacing: 10
+                    width: parent.width
+                    y: parent.height / 2 - 10
+
+                    Column {
+                        width: parent.width / 4
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: model.source
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    Column {
+                        width: parent.width / 4
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: model.target
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    Column {
+                        width: parent.width / 4
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: model.value
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                    Column {
+                        width: parent.width / 4
+
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: model.date
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                }
+            }
+            model: ListModel {
+                id: listModel
+
+                // Add more transactions here
+            }
+        }
+        Connections {
+            function onUpdateHistory(history) {
+                console.log(history.length);
+                listModel.clear();
+                for (var i = 0; i < history.length; i++) {
+                    listModel.append({
+                            "source": history[i].source,
+                            "target": history[i].target,
+                            "value": String(history[i].value),
+                            "date": history[i].date
+                        });
+                    console.log(history[i].source);
+                }
             }
 
-            Column {
-               width: parent.width / 3
-               Text {
-                text: model.target
-                anchors.horizontalCenter: parent.horizontalCenter
-                verticalAlignment: Text.AlignVCenter
-               }
+            target: CtrCards
+        }
+        Connections {
+            function onUpdateHistory(history) {
+                console.log(history.length);
+                listModel.clear();
+                for (var i = 0; i < history.length; i++) {
+                    listModel.append({
+                            "source": history[i].source,
+                            "target": history[i].target,
+                            "value": String(history[i].value),
+                            "date": history[i].date
+                        });
+                    console.log(history[i].source);
+                }
             }
 
-            Column {
-               width: parent.width / 3
-               Text {
-                text: model.value
-                anchors.horizontalCenter: parent.horizontalCenter
-                verticalAlignment: Text.AlignVCenter
-               }
-            }
-         }
-     }
- }
-
- Connections {
-    target: CtrCards
-    function onUpdateHistory(history) {
-        console.log(history.length);
-        listModel.clear()
-        for (var i = 0; i < history.length; i++) {
-            listModel.append({"source": history[i].source, "target": history[i].target, "value": String(history[i].value)})
-            console.log(history[i].source)
+            target: CtrBills
         }
     }
- }
- Connections {
-     target: CtrBills
-     function onUpdateHistory(history) {
-         console.log(history.length);
-         listModel.clear()
-         for (var i = 0; i < history.length; i++) {
-             listModel.append({"source": history[i].source, "target": history[i].target, "value": String(history[i].value)})
-             console.log(history[i].source)
-         }
-     }
-  }
- }
+    Button {
+        id: exitButton
 
- Button {
- id: exitButton
- text: "Exit"
- anchors.bottom: parent.bottom
- anchors.horizontalCenter: parent.horizontalCenter
- width: 200
- height: 50
- onClicked: {
-   main_stack_view.pop()
- }
- }
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        height: 50
+        text: "Exit"
+        width: 200
+
+        onClicked: {
+            main_stack_view.pop();
+        }
+    }
 }

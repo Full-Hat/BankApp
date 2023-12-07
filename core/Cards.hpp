@@ -94,7 +94,7 @@ public:
 
     Q_INVOKABLE
     [[nodiscard]]
-    QList<QObject*> getHistory(const QString &target) const;
+    QList<QObject*> getHistory(const QString &target);
 
     void printCards();
 
@@ -121,5 +121,5 @@ signals:
     void cardsDetails(uint16_t code, QString number, QString date, QString cvv, uint32_t value);
 
 protected:
-    backend::Api m_backend;
+    mutable backend::Api m_backend;
 };

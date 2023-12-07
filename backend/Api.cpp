@@ -293,6 +293,46 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
+    uint16_t Api::TransferAccountToAccount(const QString &source, const QString &target, uint16_t value, const QString &token) {
+        Post req;
+        req.SetUrl(m_url_base + "transactions/account-to-account");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["from"] = source;
+        req.m_json["to"] = target;
+        req.m_json["value"] = value;
+
+        auto reply = req.send();
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    Api::resp_history Api::History(const QString &token) {
+        Api::resp_history result;
+
+        Get req;
+        req.SetUrl(m_url_base + "history");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray array = json.array();
+        for(auto && i : array) {
+            auto jsonObject = i.toObject();
+            Api::resp_history::data res;
+            res.date = jsonObject["dateTime"].toString();
+            res.target = jsonObject["to"].toString();
+            res.source = jsonObject["from"].toString();
+            res.value = jsonObject["value"].toInt();
+            result.datas.push_back(res);
+        }
+
+        return result;
+    }
+
     // Получение кредита процент срок
     // Выплата кредита
 

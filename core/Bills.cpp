@@ -45,6 +45,10 @@ void Bills::onBillTransfer(const QString &target) {
     std::cout << "[backend] Transfer from bill to bill from " <<
               currentBillNumber.toStdString() <<
               " to " << target.toStdString() << std::endl;
+
+    auto code = m_backend.TransferAccountToAccount(currentBillNumber, target, 1, CurrentUser::Get().GetToken());
+    assert(code == 200);
+
     emit billsChanged(getBills(), true);
 }
 
@@ -65,11 +69,6 @@ void Bills::onHistory(const QString &target) {
 }
 
 Bills::Bills(QObject *parent) : QObject(parent) {
-    History *newHistory = new History;
-    newHistory->source = "forum.qt.io";
-    newHistory->target = "Target 1";
-    newHistory->value = 10;
-    history.push_back(std::shared_ptr<History>(newHistory));
 }
 
 void Bills::printBills() {

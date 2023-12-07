@@ -178,6 +178,24 @@ public:
     [[nodiscard]]
     uint16_t CardsBlock(const QString &id, const QString &token);
 
+    [[nodiscard]]
+    uint16_t TransferAccountToAccount(const QString &source, const QString &target, uint16_t value, const QString &token);
+
+    struct resp_history {
+        uint16_t code;
+
+        struct data {
+            QString source;
+            QString target;
+            uint16_t value;
+            QString date;
+        };
+        std::vector<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_history History(const QString &token);
+
 protected:
     QNetworkAccessManager *m_manager;
 

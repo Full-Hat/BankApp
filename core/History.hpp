@@ -20,6 +20,9 @@ public:
     Q_PROPERTY(int value READ getValue)
     int value;
 
+    Q_PROPERTY(QString date READ getDate)
+    QString date;
+
 public:
     [[nodiscard]]
     QString getSource() const { return source; }
@@ -29,4 +32,7 @@ public:
 
     [[nodiscard]]
     int getValue() const { return value; }
+
+    [[nodiscard]]
+    QString getDate() const { return date; }
 };
