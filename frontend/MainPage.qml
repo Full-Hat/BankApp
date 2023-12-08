@@ -120,4 +120,14 @@ Rectangle {
         y: parent.height * 0.5
         source: "qrc:/main/frontend/GetCredentials.qml"
     }
+
+    Loader {
+        id: warning
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        height: 300
+        source: "qrc:/main/frontend/PopUpWarning.qml"
+        width: 300
+        y: parent.height * 0.5
+    }
 }

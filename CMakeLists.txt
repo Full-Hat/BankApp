@@ -52,6 +52,7 @@ qt_add_qml_module(${ProjectName}
         "frontend/BillsView.qml"
         "frontend/GetString.qml"
         "frontend/GetCredentials.qml"
+        "frontend/Details.qml"
 
         RESOURCES
         "frontend/images/card_background.png"

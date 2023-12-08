@@ -159,8 +159,8 @@ Column {
                 var card = cards[i];
                 cardListModel.append({
                         "cardNumber": card.number,
-                        "balance": String(card.value),
-                        "isBlocked": card.isBlocked
+                        "isBlocked": card.isBlocked,
+                        "date": card.date
                     });
             }
 
@@ -172,6 +172,9 @@ Column {
             // If model is empty
             if (cardListModel.count === 0) {
                 disableButtons();
+                cardsView.currentIndex = 0;
+            }
+            if (modelSize === 0) {
                 cardsView.currentIndex = 0;
             }
 
@@ -189,8 +192,11 @@ Column {
             console.log("Index " + cardsView.currentIndex);
         }
         function onCardsDetails(code, number, date, cvv, value) {
-            popUp.item.localText = number + " " + date + "\nCVV " + cvv + "\nBalance " + value.toString();
-            popUp.item.open();
+            detailsPopup.item.number = number
+            detailsPopup.item.date = date
+            detailsPopup.item.cvv = cvv
+            detailsPopup.item.balance = value;
+            detailsPopup.item.open();
         }
 
         target: CtrCards
@@ -216,6 +222,13 @@ Column {
 
         anchors.horizontalCenter: parent.horizontalCenter
         source: "qrc:/main/frontend/PopUpInfo.qml"
+        y: parent.height * 0.5
+    }
+    Loader {
+        id: detailsPopup
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "qrc:/main/frontend/Details.qml"
         y: parent.height * 0.5
     }
 }

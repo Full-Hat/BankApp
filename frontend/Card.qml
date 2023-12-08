@@ -3,87 +3,82 @@ import Qt5Compat.GraphicalEffects
 
 Rectangle {
     id: cardItem
-    width: 300
+
     height: 200
+    width: 300
 
     Timer {
         id: timer
+
         interval: 5 // Delay in milliseconds
+
         onTriggered: opacity = 0.5
     }
-
     BorderImage {
         id: cardImage
+
+        property bool adapt: true
+        property bool rounded: true
+
         anchors.fill: parent
+        layer.enabled: rounded
         source: "images/card_background.png"
 
-        property bool rounded: true
-        property bool adapt: true
-
-        layer.enabled: rounded
         layer.effect: OpacityMask {
             maskSource: Item {
-                width: cardImage.width
                 height: cardImage.height
+                width: cardImage.width
+
                 Rectangle {
                     anchors.centerIn: parent
-                    width: cardImage.adapt ? cardImage.width : Math.min(cardImage.width, cardImage.height)
                     height: cardImage.adapt ? cardImage.height : width
                     radius: 20
+                    width: cardImage.adapt ? cardImage.width : Math.min(cardImage.width, cardImage.height)
                 }
             }
         }
 
-        Text {
+        Column {
             anchors.centerIn: parent
-            anchors.verticalCenterOffset: -20
-            text: cardNumber
-            color: "white"
-        }
-
-        Text {
-            anchors.centerIn: parent
-            anchors.verticalCenterOffset: 20
-            text: "Balance: " + balance
-            color: "white"
-        }
-
-        Text {
-            anchors.centerIn: parent
-            anchors.verticalCenterOffset: 20
-            text: ""
-            color: "white"
+            spacing: 10
+            Text {
+                color: "white"
+                text: cardNumber
+            }
+            Text {
+                color: "white"
+                text: date
+            }
         }
     }
-
     Rectangle {
         id: blockedOverlay
+
+        property bool adapt: true
+        property bool rounded: true
+
         anchors.fill: parent
         color: "white"
+        layer.enabled: rounded
         opacity: isBlocked ? 0.5 : 0
 
-        property bool rounded: true
-        property bool adapt: true
-
-        layer.enabled: rounded
         layer.effect: OpacityMask {
             maskSource: Item {
-                width: cardImage.width
                 height: cardImage.height
+                width: cardImage.width
+
                 Rectangle {
                     anchors.centerIn: parent
-                    width: cardImage.adapt ? cardImage.width : Math.min(cardImage.width, cardImage.height)
                     height: cardImage.adapt ? cardImage.height : width
                     radius: 20
+                    width: cardImage.adapt ? cardImage.width : Math.min(cardImage.width, cardImage.height)
                 }
             }
         }
-
-
     }
 
-//    Connections {
-//        target: CtrCards
-//
-//    }
+    //    Connections {
+    //        target: CtrCards
+    //
+    //    }
 }

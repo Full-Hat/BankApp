@@ -73,8 +73,17 @@ Page {
         }
         Connections {
             function onUpdateHistory(history) {
+                if (history.length === 0) {
+                    popUp.item.localText = "There are no transactions";
+                    popUp.item.header = "Hmm..";
+                    popUp.item.event = function () {
+                        main_stack_view.pop();
+                    };
+                    popUp.item.open();
+                    return;
+                }
                 console.log(history.length);
-                console.log("Value is " + history[0].value)
+                console.log("Value is " + history[0].value);
                 listModel.clear();
                 for (var i = 0; i < history.length; i++) {
                     listModel.append({
@@ -119,5 +128,12 @@ Page {
         onClicked: {
             main_stack_view.pop();
         }
+    }
+    Loader {
+        id: popUp
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "qrc:/main/frontend/PopUpInfo.qml"
+        y: parent.height * 0.5
     }
 }

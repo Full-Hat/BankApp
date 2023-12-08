@@ -12,6 +12,13 @@ Popup {
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
     property string localText: ""
+    property string header: "Good!"
+    property var event: function() {}
+
+    onClosed: {
+        // Add your code here that should be executed when the Popup is closed
+        event()
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -24,7 +31,7 @@ Popup {
 
             Text {
                 id: warningTitle
-                text: "Good!"
+                text: header
                 font.pixelSize: 24
                 color: "#333333"
                 anchors.horizontalCenter: parent.horizontalCenter
