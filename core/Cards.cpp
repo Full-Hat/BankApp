@@ -70,7 +70,7 @@ void CardsArray::onBlocked(bool block) {
     auto code = m_backend.CardsBlock(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
     assert(code == 200);
 
-    emit cardsCardsChanged(getCards(), true);
+    emit cardsCardsChanged(getCards(), false);
 }
 
 void CardsArray::onHistory(const QString &target) {

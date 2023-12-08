@@ -25,8 +25,6 @@ Column {
                 var item = itemAt(i);
                 if (i === currentIndex) {
                     item.opacity = 1.0;
-                } else if (i === currentIndex - 1 || i === currentIndex + 1) {
-                    item.opacity = 0.0;
                 } else {
                     item.opacity = 0.0;
                 }
@@ -130,11 +128,7 @@ Column {
 
             onClicked: {
                 if (cardsView.count - 1 === 0) {
-                    transfer_card.enabled = false;
-                    tramsfer_bill.enabled = false;
-                    block.enabled = false;
-                    history.enabled = false;
-                    remove.enabled = false;
+                    disableButtons()
                 }
                 CtrCards.onRemoveCard(cardListModel.get(cardsView.currentIndex).cardNumber);
                 console.log("Delete card button");
@@ -147,11 +141,7 @@ Column {
             width: 150
 
             onClicked: {
-                transfer_card.enabled = true;
-                tramsfer_bill.enabled = true;
-                block.enabled = true;
-                history.enabled = true;
-                remove.enabled = true;
+                enableButtons()
                 CtrCards.onAddCard();
                 console.log("Add card button");
                 cardsView.currentIndex = cardListModel.count - 1;
@@ -160,8 +150,10 @@ Column {
     }
     Connections {
         function onCardsCardsChanged(cards, saveCurrent) {
-            var index = cardListModel.count;
-            var currentIndex = cardsView.currentIndex;
+            let modelSize = cardListModel.count;
+            let currentIndex = cardsView.currentIndex;
+
+            // Reset model
             cardListModel.clear();
             for (var i = 0; i < cards.length; i++) {
                 var card = cards[i];
@@ -171,24 +163,30 @@ Column {
                         "isBlocked": card.isBlocked
                     });
             }
+
+            // Try to save current index
             if (saveCurrent) {
                 cardsView.currentIndex = currentIndex;
-                return;
             }
-            if (cardListModel.count < index) {
-                console.log("Update count - 1");
-                cardsView.currentIndex = cardListModel.count - 1;
-            } else if (index === 0) {
+
+            // If model is empty
+            if (cardListModel.count === 0) {
+                disableButtons();
                 cardsView.currentIndex = 0;
-            } else {
-                console.log("Update index - 1");
-                cardsView.currentIndex = index - 1;
             }
+
+            // Else
+            else if (cardListModel.count < modelSize) {
+                cardsView.currentIndex = cardListModel.count - 1;
+            }
+
+            // Force update
             if (cardsView.currentIndex === 0) {
                 cardsView.currentIndex = 1;
                 cardsView.currentIndex = 0;
             }
-                console.log("Index " + cardsView.currentIndex);
+
+            console.log("Index " + cardsView.currentIndex);
         }
         function onCardsDetails(code, number, date, cvv, value) {
             popUp.item.localText = number + " " + date + "\nCVV " + cvv + "\nBalance " + value.toString();
@@ -196,6 +194,22 @@ Column {
         }
 
         target: CtrCards
+    }
+    function enableButtons() {
+        transfer_card.enabled = true;
+        tramsfer_bill.enabled = true;
+        block.enabled = true;
+        history.enabled = true;
+        remove.enabled = true;
+        details.enabled = true;
+    }
+    function disableButtons() {
+        transfer_card.enabled = false;
+        tramsfer_bill.enabled = false;
+        block.enabled = false;
+        history.enabled = false;
+        remove.enabled = false;
+        details.enabled = false;
     }
     Loader {
         id: popUp

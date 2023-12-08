@@ -47,6 +47,13 @@ Rectangle {
             text: "Balance: " + balance
             color: "white"
         }
+
+        Text {
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: 20
+            text: ""
+            color: "white"
+        }
     }
 
     Rectangle {

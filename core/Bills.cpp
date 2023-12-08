@@ -60,7 +60,7 @@ void Bills::onBlocked(bool block) {
     auto code = m_backend.AccountBlock(this->getByNum(currentBillNumber)->getNumber(), CurrentUser::Get().GetToken());
     assert(code == 200);
 
-    emit billsChanged(getBills(), true);
+    emit billsChanged(getBills(), false);
 }
 
 void Bills::onHistory(const QString &target) {
