@@ -20,6 +20,7 @@ public:
             m_manager = new QNetworkAccessManager;
             m_request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
             m_request.setRawHeader("Accept", "*/*");
+            m_request.setTransferTimeout(100);
         }
 
         ~Request() {
@@ -203,10 +204,18 @@ public:
     resp_history History(const QString &token);
 
 protected:
+    void CheckForError(QNetworkReply &reply);
+
+protected:
     QNetworkAccessManager *m_manager;
 
     QString m_url_base = "http://localhost/api/";
     uint16_t m_port = 80;
+
+    QString m_last_error = "";
+
+public:
+    const QString &getLastError() const;
 };
 
 } // backend

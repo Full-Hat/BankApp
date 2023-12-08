@@ -43,7 +43,7 @@ Rectangle {
             spacing: 10
             Text {
                 color: "white"
-                text: cardNumber
+                text: "**** **** **** " + cardNumber
             }
             Text {
                 color: "white"

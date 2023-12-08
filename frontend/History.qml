@@ -100,6 +100,15 @@ Page {
         }
         Connections {
             function onUpdateHistory(history) {
+                if (history.length === 0) {
+                    popUp.item.localText = "There are no transactions";
+                    popUp.item.header = "Hmm..";
+                    popUp.item.event = function () {
+                        main_stack_view.pop();
+                    };
+                    popUp.item.open();
+                    return;
+                }
                 console.log(history.length);
                 listModel.clear();
                 for (var i = 0; i < history.length; i++) {

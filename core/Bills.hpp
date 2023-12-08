@@ -94,6 +94,8 @@ public slots:
 signals:
     void billsChanged(QList<QObject*> cards, bool saveCurrent);
     void updateHistory(QList<QObject*> history);
+    void showWarning(QString message);
+    void showHistory();
 
 protected:
     mutable backend::Api m_backend;

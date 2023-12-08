@@ -1,5 +1,5 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick.Controls
 
 Popup {
     id: detailsPopup
@@ -36,12 +36,14 @@ Popup {
                 Text {
                     font.pixelSize: 16
                     horizontalAlignment: Text.AlignRight
-                    text: "Number/date"
+                    text: "Number"
                 }
-                Text {
+                TextEdit {
                     font.pixelSize: 16
                     horizontalAlignment: Text.AlignLeft
                     text: number
+                    readOnly: true
+                    selectByMouse: true
                 }
                 Text {
                     font.pixelSize: 16

@@ -157,6 +157,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
@@ -188,6 +189,8 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
 
         auto reply = req.send();
 
+        CheckForError(*reply);
+
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
@@ -197,6 +200,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
@@ -209,6 +213,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
@@ -237,6 +242,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_json["currency"] = "USD";
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
@@ -249,6 +255,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
@@ -270,6 +277,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
@@ -280,6 +288,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
@@ -290,6 +299,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
@@ -306,6 +316,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_json["value"] = QString::fromStdString(str.str());
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
@@ -318,6 +329,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
@@ -348,6 +360,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_json["value"] = QString::fromStdString(str.str());
 
         auto reply = req.send();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
@@ -364,10 +377,19 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_json["value"] = QString::fromStdString(str.str());
 
         auto reply = req.send();
-
-        auto response = reply->readAll().toStdString();
+        CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    void Api::CheckForError(QNetworkReply &reply) {
+        if (reply.attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt() != 200) {
+            m_last_error = QJsonDocument::fromJson(reply.readAll())["error"].toString();
+        }
+    }
+
+    const QString &Api::getLastError() const {
+        return m_last_error;
     }
 
     // Получение кредита процент срок

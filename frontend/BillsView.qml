@@ -94,7 +94,6 @@ Column {
             width: 150
 
             onClicked: {
-                main_stack_view.push("History.qml");
                 CtrBills.onHistory(billListModel.get(billsView.currentIndex).billNumber);
                 console.log("History button clicked");
             }
@@ -171,7 +170,22 @@ Column {
 
             console.log("Index in update qml " + billsView.currentIndex);
         }
+        function onShowWarning(message) {
+            popUp.item.localText = message;
+            popUp.item.open()
+        }
+        function onShowHistory() {
+            main_stack_view.push("History.qml");
+        }
 
         target: CtrBills
+    }
+
+    Loader {
+        id: popUp
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "qrc:/main/frontend/PopUpWarning.qml"
+        y: parent.height * 0.5
     }
 }

@@ -48,7 +48,11 @@ void Bills::onBillTransfer(const QString &target, const double value) {
 
 
     auto code = m_backend.TransferAccountToAccount(currentBillNumber, target, value, CurrentUser::Get().GetToken());
-    assert(code == 200);
+
+    if (code != 200) {
+        emit showWarning(m_backend.getLastError());
+        return;
+    }
 
     emit billsChanged(getBills(), true);
 }
@@ -58,15 +62,26 @@ void Bills::onBlocked(bool block) {
               currentBillNumber.toStdString() << std::endl;
 
     auto code = m_backend.AccountBlock(this->getByNum(currentBillNumber)->getNumber(), CurrentUser::Get().GetToken());
-    assert(code == 200);
 
-    emit billsChanged(getBills(), false);
+    if (code != 200) {
+        emit showWarning(m_backend.getLastError());
+        return;
+    }
+
+    emit billsChanged(getBills(), true);
 }
 
 void Bills::onHistory(const QString &target) {
     std::cout << "[backend] Bill history requested bill " << target.toStdString() << std::endl;
 
-    emit updateHistory(getHistory(target));
+    try {
+        const auto objs = getHistory(target);
+        emit showHistory();
+        emit updateHistory(objs);
+    }
+    catch (std::runtime_error &err) {
+        emit showWarning(m_backend.getLastError());
+    }
 }
 
 Bills::Bills(QObject *parent) : QObject(parent) {
@@ -85,7 +100,9 @@ void Bills::printBills() {
 
 QList<QObject *> Bills::getHistory(const QString &target) {
     auto res = m_backend.History(CurrentUser::Get().GetToken());
-    assert(res.code == 200);
+    if (res.code != 200) {
+        throw std::runtime_error(m_backend.getLastError().toStdString());
+    }
 
     history.clear();
     for (const auto &el : res.datas) {
@@ -123,14 +140,25 @@ void Bills::onRemoveBill(const QString &target) {
     std::cout << "[backend] " << "bill removed bill " << target.toStdString() << std::endl;
 
     auto code = m_backend.AccountsRemove(target, CurrentUser::Get().GetToken());
-    assert(code == 200);
+
+    if (code != 200) {
+        emit showWarning(m_backend.getLastError());
+        return;
+    }
 
     emit billsChanged(getBills(), false);
 }
 
 void Bills::onAddBill(const QString &name) {
     std::cout << "[backend] " << "bill added" << std::endl;
-    m_backend.AccountsAdd(CurrentUser::Get().GetToken(), name);
+
+    auto code = m_backend.AccountsAdd(CurrentUser::Get().GetToken(), name);
+
+    if (code != 200) {
+        emit showWarning(m_backend.getLastError());
+        return;
+    }
+
     emit billsChanged(getBills(), false);
 }
 
