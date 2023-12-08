@@ -119,6 +119,8 @@ signals:
     void cardsCardsChanged(QList<QObject*> cards, bool saveCurrent);
     void updateHistory(QList<QObject*> history);
     void cardsDetails(uint16_t code, QString number, QString date, QString cvv, uint32_t value);
+    void showWarning(QString message);
+    void showHistory();
 
 protected:
     mutable backend::Api m_backend;

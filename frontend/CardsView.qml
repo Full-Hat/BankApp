@@ -6,6 +6,23 @@ Column {
     // Cards
     id: cards
 
+    function disableButtons() {
+        transfer_card.enabled = false;
+        tramsfer_bill.enabled = false;
+        block.enabled = false;
+        history.enabled = false;
+        remove.enabled = false;
+        details.enabled = false;
+    }
+    function enableButtons() {
+        transfer_card.enabled = true;
+        tramsfer_bill.enabled = true;
+        block.enabled = true;
+        history.enabled = true;
+        remove.enabled = true;
+        details.enabled = true;
+    }
+
     anchors.topMargin: 150
     anchors.verticalCenterOffset: 1000
     spacing: 100
@@ -80,10 +97,10 @@ Column {
             width: 150
 
             onClicked: {
-                get_credentials.item.ok = function (str) {
-                    CtrCards.onBillTransfer(str);
+                get_credentials.item.ok = function (str, value) {
+                    CtrCards.onBillTransfer(str, value);
                 };
-                get_credentials.item.no = function (str) {};
+                get_credentials.item.no = function (str, value) {};
                 get_credentials.item.open();
             }
         }
@@ -105,7 +122,6 @@ Column {
             width: 150
 
             onClicked: {
-                main_stack_view.push("History.qml");
                 CtrCards.onHistory(cardListModel.get(cardsView.currentIndex).cardNumber);
                 console.log("History button clicked");
             }
@@ -117,7 +133,7 @@ Column {
             width: 150
 
             onClicked: {
-                CtrCards.onDetails()
+                CtrCards.onDetails();
             }
         }
         Button {
@@ -128,7 +144,6 @@ Column {
 
             onClicked: {
                 if (cardsView.count - 1 === 0) {
-                    disableButtons()
                 }
                 CtrCards.onRemoveCard(cardListModel.get(cardsView.currentIndex).cardNumber);
                 console.log("Delete card button");
@@ -141,7 +156,6 @@ Column {
             width: 150
 
             onClicked: {
-                enableButtons()
                 CtrCards.onAddCard();
                 console.log("Add card button");
                 cardsView.currentIndex = cardListModel.count - 1;
@@ -174,12 +188,15 @@ Column {
                 disableButtons();
                 cardsView.currentIndex = 0;
             }
+            else {
+                enableButtons();
+            }
             if (modelSize === 0) {
                 cardsView.currentIndex = 0;
-            }
+            } else
 
             // Else
-            else if (cardListModel.count < modelSize) {
+            if (cardListModel.count < modelSize) {
                 cardsView.currentIndex = cardListModel.count - 1;
             }
 
@@ -188,40 +205,30 @@ Column {
                 cardsView.currentIndex = 1;
                 cardsView.currentIndex = 0;
             }
-
             console.log("Index " + cardsView.currentIndex);
         }
         function onCardsDetails(code, number, date, cvv, value) {
-            detailsPopup.item.number = number
-            detailsPopup.item.date = date
-            detailsPopup.item.cvv = cvv
+            detailsPopup.item.number = number;
+            detailsPopup.item.date = date;
+            detailsPopup.item.cvv = cvv;
             detailsPopup.item.balance = value;
             detailsPopup.item.open();
+        }
+        function onShowWarning(message) {
+            popUpWarning.item.localText = message
+            popUpWarning.item.open()
+        }
+        function onShowHistory() {
+            main_stack_view.push("History.qml");
         }
 
         target: CtrCards
     }
-    function enableButtons() {
-        transfer_card.enabled = true;
-        tramsfer_bill.enabled = true;
-        block.enabled = true;
-        history.enabled = true;
-        remove.enabled = true;
-        details.enabled = true;
-    }
-    function disableButtons() {
-        transfer_card.enabled = false;
-        tramsfer_bill.enabled = false;
-        block.enabled = false;
-        history.enabled = false;
-        remove.enabled = false;
-        details.enabled = false;
-    }
     Loader {
-        id: popUp
+        id: popUpWarning
 
         anchors.horizontalCenter: parent.horizontalCenter
-        source: "qrc:/main/frontend/PopUpInfo.qml"
+        source: "qrc:/main/frontend/PopUpWarning.qml"
         y: parent.height * 0.5
     }
     Loader {

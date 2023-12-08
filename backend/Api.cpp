@@ -385,6 +385,9 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
     void Api::CheckForError(QNetworkReply &reply) {
         if (reply.attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt() != 200) {
             m_last_error = QJsonDocument::fromJson(reply.readAll())["error"].toString();
+            if (m_last_error == "") {
+                m_last_error = "Connection error";
+            }
         }
     }
 

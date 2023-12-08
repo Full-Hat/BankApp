@@ -6,6 +6,19 @@ Column {
     // Bills
     id: bills
 
+    function disableButtons() {
+        transfer_bill.enabled = false;
+        block.enabled = false;
+        history.enabled = false;
+        remove.enabled = false;
+    }
+    function enableButtons() {
+        transfer_bill.enabled = true;
+        block.enabled = true;
+        history.enabled = true;
+        remove.enabled = true;
+    }
+
     anchors.topMargin: 150
     anchors.verticalCenterOffset: 1000
     spacing: 100
@@ -106,10 +119,7 @@ Column {
 
             onClicked: {
                 if (billsView.count - 1 === 0) {
-                    transfer_bill.enabled = false;
-                    block.enabled = false;
-                    history.enabled = false;
-                    remove.enabled = false;
+                    disableButtons();
                 }
                 CtrBills.onRemoveBill(billListModel.get(billsView.currentIndex).billNumber);
                 console.log("Delete bill button");
@@ -122,10 +132,6 @@ Column {
             width: 150
 
             onClicked: {
-                transfer_bill.enabled = true;
-                block.enabled = true;
-                history.enabled = true;
-                remove.enabled = true;
                 get_string.item.ok = function (str) {
                     console.log("Add bill button");
                     CtrBills.onAddBill(str);
@@ -138,37 +144,48 @@ Column {
     }
     Connections {
         function onBillsChanged(bills, saveCurrent) {
-            var index = billListModel.count;
-            var currentIndex = billsView.currentIndex;
+            let modelSize = billListModel.count;
+            let currentIndex = billsView.currentIndex;
+
+            // Reset model
             billListModel.clear();
             for (var i = 0; i < bills.length; i++) {
                 var bill = bills[i];
                 billListModel.append({
                         "billNumber": bill.number,
                         "balance": String(bill.value),
-                        "isBlocked": bill.isBlocked,
+                        "isBlocked": bill.isBlocked
                     });
             }
+
+            // Try to save current index
             if (saveCurrent) {
                 billsView.currentIndex = currentIndex;
-                return;
-            }
-            if (billListModel.count < index) {
-                console.log("Update count - 1");
-                billsView.currentIndex = billListModel.count - 1;
-            } else if (index === 0) {
-                billsView.currentIndex = 0;
-            } else {
-                console.log("Update index - 1");
-                billsView.currentIndex = index - 1;
             }
 
+            // If model is empty
+            if (billListModel.count === 0) {
+                disableButtons();
+                billsView.currentIndex = 0;
+            }
+            else {
+                enableButtons();
+            }
+            if (modelSize === 0) {
+                billsView.currentIndex = 0;
+            } else
+
+            // Else
+            if (billListModel.count < modelSize) {
+                billsView.currentIndex = cardListModel.count - 1;
+            }
+
+            // Force update
             if (billsView.currentIndex === 0) {
                 billsView.currentIndex = 1;
                 billsView.currentIndex = 0;
             }
-
-            console.log("Index in update qml " + billsView.currentIndex);
+            console.log("Index " + billsView.currentIndex);
         }
         function onShowWarning(message) {
             popUp.item.localText = message;
