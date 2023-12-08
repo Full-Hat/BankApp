@@ -2,7 +2,7 @@ import QtQuick 2.15
 import Qt5Compat.GraphicalEffects
 
 Rectangle {
-    id: cardItem
+    id: creditItem
 
     height: 200
     width: 300
@@ -15,7 +15,7 @@ Rectangle {
         onTriggered: opacity = 0.5
     }
     BorderImage {
-        id: cardImage
+        id: creditImage
 
         property bool adapt: true
         property bool rounded: true
@@ -26,14 +26,14 @@ Rectangle {
 
         layer.effect: OpacityMask {
             maskSource: Item {
-                height: cardImage.height
-                width: cardImage.width
+                height: creditImage.height
+                width: creditImage.width
 
                 Rectangle {
                     anchors.centerIn: parent
-                    height: cardImage.adapt ? cardImage.height : width
+                    height: creditImage.adapt ? creditImage.height : width
                     radius: 20
-                    width: cardImage.adapt ? cardImage.width : Math.min(cardImage.width, cardImage.height)
+                    width: creditImage.adapt ? creditImage.width : Math.min(creditImage.width, creditImage.height)
                 }
             }
         }
@@ -41,13 +41,9 @@ Rectangle {
         Column {
             anchors.centerIn: parent
             spacing: 10
+
             Text {
-                color: "white"
-                text: "**** **** **** " + cardNumber
-            }
-            Text {
-                color: "white"
-                text: date
+                text: creditId
             }
         }
     }
@@ -64,16 +60,21 @@ Rectangle {
 
         layer.effect: OpacityMask {
             maskSource: Item {
-                height: cardImage.height
-                width: cardImage.width
+                height: creditImage.height
+                width: creditImage.width
 
                 Rectangle {
                     anchors.centerIn: parent
-                    height: cardImage.adapt ? cardImage.height : width
+                    height: creditImage.adapt ? creditImage.height : width
                     radius: 20
-                    width: cardImage.adapt ? cardImage.width : Math.min(cardImage.width, cardImage.height)
+                    width: creditImage.adapt ? creditImage.width : Math.min(creditImage.width, creditImage.height)
                 }
             }
         }
     }
+
+    //    Connections {
+    //        target: CtrCredits
+    //
+    //    }
 }

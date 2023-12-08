@@ -29,6 +29,8 @@ qt_add_executable(${ProjectName}
         backend/Api.cpp
         backend/Api.hpp
         core/User.cpp
+        core/Credits.cpp
+        core/Credits.hpp
 )
 
 qt_add_qml_module(${ProjectName}
@@ -53,6 +55,8 @@ qt_add_qml_module(${ProjectName}
         "frontend/GetString.qml"
         "frontend/GetCredentials.qml"
         "frontend/Details.qml"
+        "frontend/KreditsView.qml"
+        "frontend/Kredit.qml"
 
         RESOURCES
         "frontend/images/card_background.png"

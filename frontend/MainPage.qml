@@ -46,6 +46,10 @@ Rectangle {
             // Add more ListElements here for more cards
         }
 
+        ListModel {
+            id: kreditsModel
+        }
+
         Item {
             width: parent.width
             height: parent.height
@@ -76,7 +80,7 @@ Rectangle {
                 }
             }
         }
-        Column {
+        Item {
             // Kredits
             width: parent.width
             height: parent.height

@@ -203,6 +203,44 @@ public:
     [[nodiscard]]
     resp_history History(const QString &token);
 
+    struct resp_credits_offerings_get {
+        uint16_t code;
+
+        struct data {
+            double interestRate;
+            uint16_t years;
+        };
+        std::vector<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_credits_offerings_get CreditsOfferingsGet(const QString &token);
+
+    struct resp_credits_get {
+        uint16_t code;
+
+        struct data {
+            std::string hashId;
+            std::string startDate;
+            int years;
+            double interestRate;
+            int bodySum;
+            std::string nextPaymentDate;
+            double nextPaymentSum;
+            double alreadyPaidSum;
+        };
+        std::vector<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_credits_get CreditsGet(const QString &token);
+
+    [[nodiscard]]
+    uint16_t AddCredit(const QString &token, double sum, uint16_t years);
+
+    [[nodiscard]]
+    uint16_t PayCredit(const QString &token, const QString &creditHashId, const QString &from);
+
 protected:
     void CheckForError(QNetworkReply &reply);
 

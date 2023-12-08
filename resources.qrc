@@ -18,6 +18,7 @@
 		<file>GetString.qml</file>
 		<file>GetCredentials.qml</file>
 		<file>Details.qml</file>
+		<file>Kredit.qml</file>
 	</qresource>
 	<qresource prefix="frontend/images">
 		<file>card_background.png</file>

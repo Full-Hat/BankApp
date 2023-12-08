@@ -395,6 +395,96 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return m_last_error;
     }
 
+    Api::resp_credits_offerings_get Api::CreditsOfferingsGet(const QString &token) {
+        Api::resp_credits_offerings_get result;
+
+        Get req;
+        req.SetUrl(m_url_base + "credits/offerings");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray array = json.array();
+        for(auto && i : array) {
+            auto jsonObject = i.toObject();
+            Api::resp_credits_offerings_get::data res;
+            res.years = jsonObject["years"].toInt(0);
+            res.interestRate = jsonObject["interestRate"].toDouble(0.0);
+            result.datas.push_back(res);
+        }
+
+        return result;
+    }
+
+    Api::resp_credits_get Api::CreditsGet(const QString &token) {
+        Api::resp_credits_get result;
+
+        Get req;
+        req.SetUrl(m_url_base + "credits");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray array = json.array();
+        for(auto && i : array) {
+            auto jsonObject = i.toObject();
+            Api::resp_credits_get::data res;
+            res.hashId = jsonObject["hashId"].toString().toStdString();
+            res.startDate = jsonObject["startDate"].toString().toStdString();
+            res.years = jsonObject["years"].toInt();
+            res.interestRate = jsonObject["interestRate"].toDouble();
+            res.bodySum = jsonObject["bodySum"].toInt();
+            res.nextPaymentDate = jsonObject["nextPaymentDate"].toString().toStdString();
+            res.nextPaymentSum = jsonObject["nextPaymentSum"].toDouble();
+            res.alreadyPaidSum = jsonObject["alreadyPaidSum"].toDouble();
+            result.datas.push_back(res);
+        }
+        CheckForError(*reply);
+
+        return result;
+    }
+
+    uint16_t Api::AddCredit(const QString &token, double sum, uint16_t years) {
+        Post req;
+        req.SetUrl(m_url_base + "transactions/card-to-account");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        std::stringstream str;
+        str << std::fixed << std::setprecision(2) << sum;
+        req.m_json["sum"] = QString::fromStdString(str.str());
+        req.m_json["currency"] = "USD";
+        req.m_json["years"] = years;
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    uint16_t Api::PayCredit(const QString &token, const QString &creditHashId, const QString &from) {
+        Post req;
+        req.SetUrl(m_url_base + "transactions/card-to-account");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["creditHashId"] = creditHashId;
+        req.m_json["from"] = from;
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+
+
     // Получение кредита процент срок
     // Выплата кредита
 

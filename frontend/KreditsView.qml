@@ -1,75 +1,142 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.5
+import QtQuick 6.6
+import QtQuick.Controls 6.6
+import QtQuick.Layouts
 
 Column {
-    spacing: 10
-    anchors.horizontalCenter: parent.horizontalCenter
+    // Credits
+    id: credits
 
-    property string value: "10"
-    Text {
-        text: "Погашение"
-        horizontalAlignment: Text.AlignHCenter
+    anchors.topMargin: 150
+    anchors.verticalCenterOffset: 1000
+    spacing: 100
+
+    SwipeView {
+        id: creditsView
+
         anchors.horizontalCenter: parent.horizontalCenter
-    }
+        height: 150
+        width: 300
 
-    Text {
-        text: "Общая сумма долга " + value
-        horizontalAlignment: Text.AlignHCenter
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-
-    ListView {
-        model: ListModel {
-            ListElement { source: "jqwowqd"; target: "okqwdok"; value: "qwdk" }
-        }
-
-        delegate: Rectangle {
-            width: parent.width
-            height: 50
-            color: index % 2 === 0 ? "white" : "lightgray" // Alternate row colors
-
-            Row {
-                width: parent.width
-                spacing: 10
-                y: parent.height / 2 - 10
-
-                Column {
-                   width: parent.width / 3
-                   Text {
-                        text: model.source
-                        horizontalAlignment: Text.AlignHCenter
-                   }
-                }
-
-                Column {
-                   width: parent.width / 3
-                   Text {
-                        text: model.target
-                        horizontalAlignment: Text.AlignHCenter
-                   }
-                }
-
-                Column {
-                   width: parent.width / 3
-                   Text {
-                        text: model.value
-                        horizontalAlignment: Text.AlignHCenter
-                   }
+        onCurrentIndexChanged: {
+            if (creditListModel.count === 0) {
+                return;
+            }
+            for (var i = 0; i < count; i++) {
+                var item = itemAt(i);
+                if (i === currentIndex) {
+                    item.opacity = 1.0;
+                } else {
+                    item.opacity = 0.0;
                 }
             }
-       }
-    }
-
-    Text {
-        text: "Получение нового"
-        horizontalAlignment: Text.AlignHCenter
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-
-    Button {
-        text: "Получить новый"
-        onClicked: {
-            // Add your code here
+            console.log("Current index " + currentIndex);
+            CtrCredits.onCurrentKreditUpdate(creditListModel.get(currentIndex).creditNumber);
         }
+
+        Repeater {
+            model: creditListModel
+
+            delegate: Credit {
+                opacity: 0.0
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 500
+                    }
+                }
+            }
+        }
+    }
+    Text {
+        id: text_credits_title
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pixelSize: 23
+        horizontalAlignment: Text.AlignHCenter
+        text: "Your -^- Credits"
+    }
+    Grid {
+        anchors.horizontalCenter: parent.horizontalCenter
+        columns: 2
+        spacing: 10
+        
+        Button {
+            id: add
+
+            text: "Add credit"
+            width: 150
+
+            onClicked: {
+                get_string.item.ok = function (str) {
+                    console.log("Add credit button");
+                    CtrCredits.onAddKredit(str);
+                    creditsView.currentIndex = creditListModel.count - 1;
+                };
+                get_string.item.no = function (str) {};
+                get_string.item.open();
+            }
+        }
+    }
+    Connections {
+        function onCreditsChanged(credits, saveCurrent) {
+            let modelSize = creditListModel.count;
+            let currentIndex = creditsView.currentIndex;
+
+            // Reset model
+            creditListModel.clear();
+            for (var i = 0; i < credits.length; i++) {
+                var credit = credits[i];
+                creditListModel.append({
+                        "hashId": credit.hashId,
+                        "date": credit.date,
+                        "years": credit.years,
+                        "interstrait": credit.interstrait,
+                        "bodySum": credit.bodySum,
+                        "sum": credit.sum,
+                        "payedSum": credit.payedSum
+                    });
+            }
+
+            // Try to save current index
+            if (saveCurrent) {
+                creditsView.currentIndex = currentIndex;
+            }
+
+            // If model is empty
+            if (creditListModel.count === 0) {
+                disableButtons();
+                creditsView.currentIndex = 0;
+            } else {
+                enableButtons();
+            }
+            if (modelSize === 0) {
+                creditsView.currentIndex = 0;
+            } else
+
+            // Else
+            if (creditListModel.count < modelSize) {
+                creditsView.currentIndex = cardListModel.count - 1;
+            }
+
+            // Force update
+            if (creditsView.currentIndex === 0) {
+                creditsView.currentIndex = 1;
+                creditsView.currentIndex = 0;
+            }
+            console.log("Index " + creditsView.currentIndex);
+        }
+        function onShowWarning(message) {
+            popUp.item.localText = message;
+            popUp.item.open();
+        }
+
+        target: CtrCredits
+    }
+    Loader {
+        id: popUp
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "qrc:/main/frontend/PopUpWarning.qml"
+        y: parent.height * 0.5
     }
 }
