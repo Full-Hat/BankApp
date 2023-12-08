@@ -68,11 +68,11 @@ Column {
             width: 150
 
             onClicked: {
-                get_string.item.ok = function (str) {
-                    CtrCards.onCardTransfer(str);
+                get_credentials.item.ok = function (str, value) {
+                    CtrCards.onCardTransfer(str, value);
                 };
-                get_string.item.no = function (str) {};
-                get_string.item.open();
+                get_credentials.item.no = function (str, value) {};
+                get_credentials.item.open();
             }
         }
         Button {
@@ -82,11 +82,11 @@ Column {
             width: 150
 
             onClicked: {
-                get_string.item.ok = function (str) {
+                get_credentials.item.ok = function (str) {
                     CtrCards.onBillTransfer(str);
                 };
-                get_string.item.no = function (str) {};
-                get_string.item.open();
+                get_credentials.item.no = function (str) {};
+                get_credentials.item.open();
             }
         }
         Button {

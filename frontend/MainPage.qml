@@ -111,4 +111,13 @@ Rectangle {
         y: parent.height * 0.5
         source: "qrc:/main/frontend/GetString.qml"
     }
+
+    Loader {
+        id: get_credentials
+        width: 300
+        height: 300
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: parent.height * 0.5
+        source: "qrc:/main/frontend/GetCredentials.qml"
+    }
 }

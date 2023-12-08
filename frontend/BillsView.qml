@@ -69,11 +69,11 @@ Column {
             width: 150
 
             onClicked: {
-                get_string.item.ok = function (str) {
-                    CtrBills.onBillTransfer(str);
+                get_credentials.item.ok = function (str, value) {
+                    CtrBills.onBillTransfer(str, value);
                 };
-                get_string.item.no = function (str) {};
-                get_string.item.open();
+                get_credentials.item.no = function (str, value) {};
+                get_credentials.item.open();
             }
         }
         Button {

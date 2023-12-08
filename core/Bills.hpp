@@ -82,7 +82,7 @@ public:
 public slots:
     void onCurrentBillUpdate(const QString newNumber);
 
-    void onBillTransfer(const QString &target);
+    void onBillTransfer(const QString &target, const double value);
     void onBlocked(bool isBlocked);
 
     void onHistory(const QString &target);

@@ -103,8 +103,8 @@ public:
 public slots:
     void onCurrentCardUpdate(const QString& newNumber);
 
-    void onCardTransfer(const QString &target);
-    void onBillTransfer(const QString &target);
+    void onCardTransfer(const QString &target, double value);
+    void onBillTransfer(const QString &target, double value);
     void onBlocked(bool isBlocked);
 
     void onDetails();

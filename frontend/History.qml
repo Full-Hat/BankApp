@@ -74,6 +74,7 @@ Page {
         Connections {
             function onUpdateHistory(history) {
                 console.log(history.length);
+                console.log("Value is " + history[0].value)
                 listModel.clear();
                 for (var i = 0; i < history.length; i++) {
                     listModel.append({

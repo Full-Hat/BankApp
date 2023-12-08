@@ -39,17 +39,27 @@ void CardsArray::onCurrentCardUpdate(const QString& newNumber) {
     this->currentCardNumber = newNumber;
 }
 
-void CardsArray::onCardTransfer(const QString &target) {
+void CardsArray::onCardTransfer(const QString &target, double value) {
     std::cout << "[backend] Transfer from card to card from " <<
         currentCardNumber.toStdString() <<
         " to " << target.toStdString() << std::endl;
+
+    auto resp = m_backend.CardsGetDetails(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+    auto code = m_backend.TransferCardToCard(resp.number, target, value, CurrentUser::Get().GetToken());
+    assert(code == 200);
+
     emit cardsCardsChanged(getCards(), true);
 }
 
-void CardsArray::onBillTransfer(const QString &target) {
+void CardsArray::onBillTransfer(const QString &target, double value) {
     std::cout << "[backend] Transfer from card to bill from " <<
               currentCardNumber.toStdString() <<
               " to " << target.toStdString() << std::endl;
+
+    auto resp = m_backend.CardsGetDetails(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+    auto code = m_backend.TransferCardToAccount(resp.number, target, value, CurrentUser::Get().GetToken());
+    assert(code == 200);
+
     emit cardsCardsChanged(getCards(), true);
 }
 
@@ -70,11 +80,6 @@ void CardsArray::onHistory(const QString &target) {
 }
 
 CardsArray::CardsArray(QObject *parent) : QObject(parent) {
-    auto *newHistory = new History;
-    newHistory->source = "forum.qt.io";
-    newHistory->target = "Target 1";
-    newHistory->value = 10;
-    history.push_back(std::shared_ptr<History>(newHistory));
 }
 
 void CardsArray::onUpdate() {

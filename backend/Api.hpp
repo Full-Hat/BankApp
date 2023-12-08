@@ -179,7 +179,13 @@ public:
     uint16_t CardsBlock(const QString &id, const QString &token);
 
     [[nodiscard]]
-    uint16_t TransferAccountToAccount(const QString &source, const QString &target, uint16_t value, const QString &token);
+    uint16_t TransferAccountToAccount(const QString &source, const QString &target, double value, const QString &token);
+
+    [[nodiscard]]
+    uint16_t TransferCardToAccount(const QString &source, const QString &target, double value, const QString &token);
+
+    [[nodiscard]]
+    uint16_t TransferCardToCard(const QString &source, const QString &target, double value, const QString &token);
 
     struct resp_history {
         uint16_t code;
@@ -187,7 +193,7 @@ public:
         struct data {
             QString source;
             QString target;
-            uint16_t value;
+            double value;
             QString date;
         };
         std::vector<data> datas;

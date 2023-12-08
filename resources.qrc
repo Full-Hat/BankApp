@@ -16,6 +16,7 @@
 		<file>CardsView.qml</file>
 		<file>BillsView.qml</file>
 		<file>GetString.qml</file>
+		<file>GetCredentials.qml</file>
 	</qresource>
 	<qresource prefix="frontend/images">
 		<file>card_background.png</file>

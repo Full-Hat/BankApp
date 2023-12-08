@@ -5,6 +5,7 @@
 #include "Api.hpp"
 
 #include <iostream>
+#include <sstream>
 
 namespace backend {
 
@@ -293,14 +294,16 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
-    uint16_t Api::TransferAccountToAccount(const QString &source, const QString &target, uint16_t value, const QString &token) {
+    uint16_t Api::TransferAccountToAccount(const QString &source, const QString &target, double value, const QString &token) {
         Post req;
         req.SetUrl(m_url_base + "transactions/account-to-account");
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         req.m_json["from"] = source;
         req.m_json["to"] = target;
-        req.m_json["value"] = value;
+        std::stringstream str;
+        str << std::fixed << std::setprecision(2) << value;
+        req.m_json["value"] = QString::fromStdString(str.str());
 
         auto reply = req.send();
 
@@ -323,14 +326,48 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         for(auto && i : array) {
             auto jsonObject = i.toObject();
             Api::resp_history::data res;
-            res.date = jsonObject["dateTime"].toString();
-            res.target = jsonObject["to"].toString();
-            res.source = jsonObject["from"].toString();
-            res.value = jsonObject["value"].toInt();
+            res.date = jsonObject["dateTime"].toString("Undefined");
+            res.target = jsonObject["to"].toString("Undefined");
+            res.source = jsonObject["from"].toString("Undefined");
+            res.value = jsonObject["value"].toDouble(0.0);
             result.datas.push_back(res);
         }
 
         return result;
+    }
+
+    uint16_t Api::TransferCardToAccount(const QString &source, const QString &target, double value, const QString &token) {
+        Post req;
+        req.SetUrl(m_url_base + "transactions/card-to-account");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["from"] = source;
+        req.m_json["to"] = target;
+        std::stringstream str;
+        str << std::fixed << std::setprecision(2) << value;
+        req.m_json["value"] = QString::fromStdString(str.str());
+
+        auto reply = req.send();
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    uint16_t Api::TransferCardToCard(const QString &source, const QString &target, double value, const QString &token) {
+        Post req;
+        req.SetUrl(m_url_base + "transactions/card-to-card");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["from"] = source;
+        req.m_json["to"] = target;
+        std::stringstream str;
+        str << std::fixed << std::setprecision(2) << value;
+        req.m_json["value"] = QString::fromStdString(str.str());
+
+        auto reply = req.send();
+
+        auto response = reply->readAll().toStdString();
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
     // Получение кредита процент срок
