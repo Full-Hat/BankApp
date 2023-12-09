@@ -98,6 +98,7 @@ signals:
     void showWarning(QString message);
     void updateInterestRates(QList<QObject*> rates);
     void updateDates(QList<QObject*> dates);
+    void showOk();
 
 protected:
     mutable backend::Api m_backend;

@@ -194,6 +194,10 @@ Column {
             }
             yearBox.currentIndex = 0
         }
+        function onShowOk() {
+            popUpInfo.item.localText = "it works"
+            popUpInfo.item.open()
+        }
 
         target: CtrCredits
     }
@@ -202,6 +206,13 @@ Column {
 
         anchors.horizontalCenter: parent.horizontalCenter
         source: "qrc:/main/frontend/PopUpWarning.qml"
+        y: parent.height * 0.5
+    }
+    Loader {
+        id: popUpInfo
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        source: "qrc:/main/frontend/PopUpInfo.qml"
         y: parent.height * 0.5
     }
 }

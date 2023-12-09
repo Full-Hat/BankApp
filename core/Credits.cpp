@@ -43,6 +43,11 @@ void Credits::onCurrentCreditUpdate(const QString &newNumber) {
 }
 
 void Credits::onAddCredit(double sum, uint16_t years) {
+    if (years == 0) {
+        emit showWarning("Wrong values");
+        return;
+    }
+
     std::cout << sum << " " << years << std::endl;
     auto code = m_backend.AddCredit(CurrentUser::Get().GetToken(), sum, years);
 
@@ -50,6 +55,8 @@ void Credits::onAddCredit(double sum, uint16_t years) {
         emit showWarning(m_backend.getLastError());
         return;
     }
+
+    emit showOk();
 }
 
 void Credits::UpdateInteresRatesEvent() {
