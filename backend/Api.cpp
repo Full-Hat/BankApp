@@ -454,7 +454,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
 
     uint16_t Api::AddCredit(const QString &token, double sum, uint16_t years) {
         Post req;
-        req.SetUrl(m_url_base + "transactions/card-to-account");
+        req.SetUrl(m_url_base + "credits");
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         std::stringstream str;
@@ -471,7 +471,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
 
     uint16_t Api::PayCredit(const QString &token, const QString &creditHashId, const QString &from) {
         Post req;
-        req.SetUrl(m_url_base + "transactions/card-to-account");
+        req.SetUrl(m_url_base + "credits/pay");
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         req.m_json["creditHashId"] = creditHashId;
@@ -487,5 +487,4 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
 
     // Получение кредита процент срок
     // Выплата кредита
-
 } // backend

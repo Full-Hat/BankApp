@@ -1,6 +1,6 @@
 <RCC version="1.0">
 	<qresource prefix="frontend">
-		<file>KreditsView.qml</file>
+		<file>CreditsView.qml</file>
 		<file>LoginPageCode.qml</file>
 		<file>Card.qml</file>
 		<file>PopUpWarning.qml</file>
@@ -18,7 +18,7 @@
 		<file>GetString.qml</file>
 		<file>GetCredentials.qml</file>
 		<file>Details.qml</file>
-		<file>Kredit.qml</file>
+		<file>Credit.qml</file>
 	</qresource>
 	<qresource prefix="frontend/images">
 		<file>card_background.png</file>

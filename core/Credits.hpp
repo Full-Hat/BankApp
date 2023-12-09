@@ -7,6 +7,7 @@
 #include "backend/Api.hpp"
 
 #include <QObject>
+#include <memory>
 
 class Credit : public QObject {
     Q_OBJECT
@@ -46,14 +47,16 @@ public:
     void setPayedSum(double value) { payedSum = value; }
 
     Credit(QString hashId, QString date, int years, double interstrait, double bodySum, double sum, double payedSum, QObject* parent = nullptr);
+    Credit(int years, double interstrait, QObject* parent = nullptr);
+    Credit(QObject* parent = nullptr);
 };
 
-class CreditsArray : public QObject {
+class Credits : public QObject {
 Q_OBJECT
 
 protected:
 
-    Q_PROPERTY(QList<QObject*> cards READ getCredits)
+    Q_PROPERTY(QList<QObject*> credits READ getCredits)
     QList<std::shared_ptr<Credit>> backend_cards;
 
     Q_PROPERTY(QString currentCreditNumber READ getCreditNumber WRITE setCreditNumber)
@@ -64,7 +67,7 @@ protected:
 public:
     using QML_MapList = QList<QMap<QString, QString>>;
 
-    CreditsArray(QObject *parent = nullptr);
+    Credits(QObject *parent = nullptr);
 
     [[nodiscard]]
     QString getCreditNumber() const { return currentCreditNumber; };
@@ -76,12 +79,25 @@ public:
 
     std::shared_ptr<Credit> getByNum(QString number);
 
+    std::vector<std::shared_ptr<Credit>> percent;
+    std::vector<std::shared_ptr<Credit>> years;
+
+    void UpdateInteresRatesEvent();
+
 public slots:
-    void onCreditsChanged(QList<QObject*> credits, bool saveCurrent);
     void onCurrentCreditUpdate(const QString& newNumber);
 
+    void onAddCredit(double sum, uint16_t years);
+
+    void onUpdateDatesEvent();
+
+    void onUpdate();
+
 signals:
+    void creditsChanged(QList<QObject*> credits, bool saveCurrent);
     void showWarning(QString message);
+    void updateInterestRates(QList<QObject*> rates);
+    void updateDates(QList<QObject*> dates);
 
 protected:
     mutable backend::Api m_backend;

@@ -11,6 +11,7 @@
 #include "core/Cards.hpp"
 #include "core/Bills.hpp"
 #include "core/User.hpp"
+#include "core/Credits.hpp"
 
 #include "backend/Api.hpp"
 
@@ -39,6 +40,9 @@ int main(int argc, char* argv[]) {
 
     Bills BillsController;
     qml_engine.rootContext()->setContextProperty("CtrBills", &BillsController);
+
+    Credits CreditsController;
+    qml_engine.rootContext()->setContextProperty("CtrCredits", &CreditsController);
 
     CurrentUser::Get().SetToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJjcmF6eXRodHBsYXlAZ21haWwuY29tIiwianRpIjoiYjQxMTNkNjQtZTdmYS00Mzc3LWFiM2YtNDM1YmMyNDk3ZWFjIiwibmJmIjoxNzAxODAyMjczLCJleHAiOjE3MzMzMzgyNzMsImlhdCI6MTcwMTgwMjI3NH0.4XQ0OJB4Kv6_FKrfLHi7RmzYaZNeAgGs5orIdAmFSbc");
     // Load frontend

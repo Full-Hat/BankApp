@@ -21,7 +21,7 @@ Rectangle {
             text: qsTr("Account")
         }
         TabButton {
-            text: qsTr("Kredits")
+            text: qsTr("Credits")
         }
         TabButton {
             text: qsTr("Documents")
@@ -47,7 +47,7 @@ Rectangle {
         }
 
         ListModel {
-            id: kreditsModel
+            id: creditListModel
         }
 
         Item {
@@ -81,20 +81,23 @@ Rectangle {
             }
         }
         Item {
-            // Kredits
+            // Credits
             width: parent.width
             height: parent.height
 
             Loader {
-                id: kredits
-                source: "qrc:/main/frontend/KreditsView.qml"
+                id: credits
+                source: "qrc:/main/frontend/CreditsView.qml"
 
                 anchors.horizontalCenter: parent.horizontalCenter
+                onLoaded: {
+                    CtrCredits.onUpdate()
+                }
             }
         }
         Column {
             // Documents
-            // Kredits
+            // Credits
             width: parent.width
             height: parent.height
 

@@ -3,8 +3,7 @@ import QtQuick.Controls 6.6
 import QtQuick.Layouts
 
 Column {
-    // Credits
-    id: credits
+    id: creditsViewItem
 
     anchors.topMargin: 150
     anchors.verticalCenterOffset: 1000
@@ -30,7 +29,7 @@ Column {
                 }
             }
             console.log("Current index " + currentIndex);
-            CtrCredits.onCurrentKreditUpdate(creditListModel.get(currentIndex).creditNumber);
+            CtrCredits.onCurrentCreditUpdate(creditListModel.get(currentIndex).creditNumber);
         }
 
         Repeater {
@@ -55,28 +54,77 @@ Column {
         horizontalAlignment: Text.AlignHCenter
         text: "Your -^- Credits"
     }
+
+    Row {
+        ComboBox {
+            id: combo
+            editable: false
+            model: ListModel {
+                id: model
+            }
+
+            onCurrentIndexChanged: {
+                console.log("Choose" + currentIndex)
+                if (currentIndex === 0) {
+                    yearBox.enabled = false;
+                    sumField.enabled = false;
+                    yearBox.currentIndex = 0;
+                }
+                else {
+                    yearBox.enabled = true;
+                    CtrCredits.onUpdateDatesEvent();
+                }
+            }
+        }
+        ComboBox {
+            id: yearBox
+            editable: false
+            enabled: false
+            model: ListModel {
+                id: yearModel
+                //ListElement { text: "None" }
+            }
+
+            onCurrentIndexChanged: {
+                console.log("Choose" + currentIndex + currentText)
+                if (currentIndex === 0) {
+                    sumField.enabled = false;
+                }
+                else {
+                    sumField.enabled = true;
+                }
+            }
+        }
+        TextField {
+            id: sumField
+            placeholderText: "sum > 10";
+            validator: DoubleValidator {
+                bottom: 0.01
+                decimals: 2
+                notation: DoubleValidator.StandardNotation
+                top: Infinity
+            }
+        }
+    }
+
     Grid {
         anchors.horizontalCenter: parent.horizontalCenter
         columns: 2
         spacing: 10
-        
+
         Button {
             id: add
 
-            text: "Add credit"
+            text: "Try"
             width: 150
 
             onClicked: {
-                get_string.item.ok = function (str) {
-                    console.log("Add credit button");
-                    CtrCredits.onAddKredit(str);
-                    creditsView.currentIndex = creditListModel.count - 1;
-                };
-                get_string.item.no = function (str) {};
-                get_string.item.open();
+                console.log("Add credit button");
+                CtrCredits.onAddCredit(Number(sumField.text), parseInt(yearBox.text));
             }
         }
     }
+
     Connections {
         function onCreditsChanged(credits, saveCurrent) {
             let modelSize = creditListModel.count;
@@ -123,11 +171,28 @@ Column {
                 creditsView.currentIndex = 1;
                 creditsView.currentIndex = 0;
             }
-            console.log("Index " + creditsView.currentIndex);
         }
         function onShowWarning(message) {
             popUp.item.localText = message;
             popUp.item.open();
+        }
+        function onUpdateInterestRates(objs) {
+            model.clear()
+            model.append({"text": "None"})
+            for (var i = 0; i < objs.length; i++) {
+                var credit = objs[i];
+                model.append({"text": credit.interstrait.toString()});
+            }
+            combo.currentIndex = 0
+        }
+        function onUpdateDates(objs) {
+            yearModel.clear()
+            yearModel.append({"text": "None"})
+            for (var i = 0; i < objs.length; i++) {
+                var credit = objs[i];
+                yearModel.append({"text": credit.years.toString()});
+            }
+            yearBox.currentIndex = 0
         }
 
         target: CtrCredits

@@ -37,7 +37,7 @@ qt_add_qml_module(${ProjectName}
         URI main
         VERSION 1.0
         QML_FILES
-        "frontend/KreditsView.qml"
+        "frontend/CreditsView.qml"
         "frontend/LoginPageCode.qml"
         "frontend/Card.qml"
         "frontend/PopUpWarning.qml"
@@ -55,8 +55,7 @@ qt_add_qml_module(${ProjectName}
         "frontend/GetString.qml"
         "frontend/GetCredentials.qml"
         "frontend/Details.qml"
-        "frontend/KreditsView.qml"
-        "frontend/Kredit.qml"
+        "frontend/Credit.qml"
 
         RESOURCES
         "frontend/images/card_background.png"
