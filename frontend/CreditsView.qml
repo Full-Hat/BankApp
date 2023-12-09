@@ -28,8 +28,8 @@ Column {
                     item.opacity = 0.0;
                 }
             }
-            console.log("Current index " + currentIndex);
-            CtrCredits.onCurrentCreditUpdate(creditListModel.get(currentIndex).creditNumber);
+            console.log("Current credit index " + currentIndex);
+            CtrCredits.onCurrentCreditUpdate(creditListModel.get(currentIndex).hashId);
         }
 
         Repeater {
@@ -119,14 +119,15 @@ Column {
             width: 150
 
             onClicked: {
-                console.log("Add credit button");
-                CtrCredits.onAddCredit(Number(sumField.text), parseInt(yearBox.text));
+                console.log("Add credit button" + yearBox.text + " " + parseInt(yearBox.currentText));
+                CtrCredits.onAddCredit(Number(sumField.text), parseInt(yearBox.currentText));
             }
         }
     }
 
     Connections {
         function onCreditsChanged(credits, saveCurrent) {
+            console.log("onCreditsChanged")
             let modelSize = creditListModel.count;
             let currentIndex = creditsView.currentIndex;
 
@@ -145,6 +146,8 @@ Column {
                     });
             }
 
+            console.log("credits count " + creditListModel.count)
+
             // Try to save current index
             if (saveCurrent) {
                 creditsView.currentIndex = currentIndex;
@@ -152,10 +155,7 @@ Column {
 
             // If model is empty
             if (creditListModel.count === 0) {
-                disableButtons();
                 creditsView.currentIndex = 0;
-            } else {
-                enableButtons();
             }
             if (modelSize === 0) {
                 creditsView.currentIndex = 0;

@@ -77,7 +77,7 @@ public:
     [[nodiscard]]
     QList<QObject*> getCredits();
 
-    std::shared_ptr<Credit> getByNum(QString number);
+    //std::shared_ptr<Credit> getByNum(QString number);
 
     std::vector<std::shared_ptr<Credit>> percent;
     std::vector<std::shared_ptr<Credit>> years;

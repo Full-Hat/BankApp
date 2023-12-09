@@ -220,12 +220,12 @@ public:
         uint16_t code;
 
         struct data {
-            std::string hashId;
-            std::string startDate;
+            QString hashId;
+            QString startDate;
             int years;
             double interestRate;
-            int bodySum;
-            std::string nextPaymentDate;
+            double bodySum;
+            QString nextPaymentDate;
             double nextPaymentSum;
             double alreadyPaidSum;
         };

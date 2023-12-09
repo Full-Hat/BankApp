@@ -31,15 +31,38 @@ Credits::Credits(QObject *parent) : QObject(parent) {
 }
 
 QList<QObject *> Credits::getCredits() {
+    auto res = m_backend.CreditsGet(CurrentUser::Get().GetToken());
+    if (res.code != 200) {
+        return {};
+    }
+    backend_cards.clear();
+    for(const auto& data : res.datas) {
+        std::shared_ptr<Credit> bill = std::make_shared<Credit>(
+                data.hashId,
+                data.nextPaymentDate,
+                data.years,
+                data.interestRate,
+                data.bodySum,
+                data.alreadyPaidSum,
+                data.nextPaymentSum
+                );
+        backend_cards.append(bill);
+    }
 
+    QList<QObject *> qmlCards(backend_cards.size());
+    for (int i = 0; i < backend_cards.size(); ++i) {
+        qmlCards[i] = static_cast<QObject*>(backend_cards[i].get());
+    }
+
+    return qmlCards;
 }
 
-std::shared_ptr<Credit> Credits::getByNum(QString number) {
-    return std::shared_ptr<Credit>();
-}
+//std::shared_ptr<Credit> Credits::getByNum(QString number) {
+//    return std::shared_ptr<Credit>();
+//}
 
 void Credits::onCurrentCreditUpdate(const QString &newNumber) {
-
+    this->currentCreditNumber = newNumber;
 }
 
 void Credits::onAddCredit(double sum, uint16_t years) {
@@ -129,4 +152,5 @@ void Credits::onUpdateDatesEvent() {
 
 void Credits::onUpdate() {
     UpdateInteresRatesEvent();
+    emit creditsChanged(getCredits(), false);
 }

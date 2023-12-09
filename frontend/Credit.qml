@@ -7,6 +7,10 @@ Rectangle {
     height: 200
     width: 300
 
+    Text {
+
+    }
+
     Timer {
         id: timer
 
@@ -43,38 +47,8 @@ Rectangle {
             spacing: 10
 
             Text {
-                text: creditId
+                text: hashId
             }
         }
     }
-    Rectangle {
-        id: blockedOverlay
-
-        property bool adapt: true
-        property bool rounded: true
-
-        anchors.fill: parent
-        color: "white"
-        layer.enabled: rounded
-        opacity: isBlocked ? 0.5 : 0
-
-        layer.effect: OpacityMask {
-            maskSource: Item {
-                height: creditImage.height
-                width: creditImage.width
-
-                Rectangle {
-                    anchors.centerIn: parent
-                    height: creditImage.adapt ? creditImage.height : width
-                    radius: 20
-                    width: creditImage.adapt ? creditImage.width : Math.min(creditImage.width, creditImage.height)
-                }
-            }
-        }
-    }
-
-    //    Connections {
-    //        target: CtrCredits
-    //
-    //    }
 }

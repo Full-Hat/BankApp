@@ -437,12 +437,12 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         for(auto && i : array) {
             auto jsonObject = i.toObject();
             Api::resp_credits_get::data res;
-            res.hashId = jsonObject["hashId"].toString().toStdString();
-            res.startDate = jsonObject["startDate"].toString().toStdString();
+            res.hashId = jsonObject["hashId"].toString();
+            res.startDate = jsonObject["startDate"].toString();
             res.years = jsonObject["years"].toInt();
             res.interestRate = jsonObject["interestRate"].toDouble();
-            res.bodySum = jsonObject["bodySum"].toInt();
-            res.nextPaymentDate = jsonObject["nextPaymentDate"].toString().toStdString();
+            res.bodySum = jsonObject["bodySum"].toDouble();
+            res.nextPaymentDate = jsonObject["nextPaymentDate"].toString();
             res.nextPaymentSum = jsonObject["nextPaymentSum"].toDouble();
             res.alreadyPaidSum = jsonObject["alreadyPaidSum"].toDouble();
             result.datas.push_back(res);
@@ -465,6 +465,12 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
 
         auto reply = req.send();
         CheckForError(*reply);
+
+        if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt() == 200 &&
+            QJsonDocument::fromJson(reply->readAll())["accepted"].toString() != "true") {
+            m_last_error = "Rejected by bank";
+            return 500;
+        }
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
