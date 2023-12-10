@@ -27,9 +27,6 @@ Credit::Credit(int years, double interstrait, QObject *parent) : QObject(parent)
 Credit::Credit(QObject *parent) : QObject(parent) {
 }
 
-Credits::Credits(QObject *parent) : QObject(parent) {
-}
-
 QList<QObject *> Credits::getCredits() {
     auto res = m_backend.CreditsGet(CurrentUser::Get().GetToken());
     if (res.code != 200) {
@@ -153,4 +150,15 @@ void Credits::onUpdateDatesEvent() {
 void Credits::onUpdate() {
     UpdateInteresRatesEvent();
     emit creditsChanged(getCredits(), false);
+    emit updateBills(bills.getBills());
+}
+
+void Credits::onPay(QString from) {
+    auto res = m_backend.PayCredit(CurrentUser::Get().GetToken(), currentCreditNumber, from);
+    if (res != 200) {
+        emit showWarning(m_backend.getLastError());
+        return;
+    }
+
+    emit showOk();
 }

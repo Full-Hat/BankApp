@@ -50,6 +50,10 @@ Rectangle {
             id: creditListModel
         }
 
+        ListModel {
+            id: documentListModel
+        }
+
         Item {
             width: parent.width
             height: parent.height
@@ -95,7 +99,7 @@ Rectangle {
                 }
             }
         }
-        Column {
+        Item {
             // Documents
             // Credits
             width: parent.width
@@ -106,6 +110,9 @@ Rectangle {
                 source: "qrc:/main/frontend/DocumentsView.qml"
 
                 anchors.horizontalCenter: parent.horizontalCenter
+                onLoaded: {
+                    CtrDocuments.onUpdate(4, 2023)
+                }
             }
         }
     }

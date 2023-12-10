@@ -5,6 +5,7 @@
 #pragma once
 
 #include "backend/Api.hpp"
+#include "core/Bills.hpp"
 
 #include <QObject>
 #include <memory>
@@ -67,7 +68,7 @@ protected:
 public:
     using QML_MapList = QList<QMap<QString, QString>>;
 
-    Credits(QObject *parent = nullptr);
+    Credits(Bills &bill, QObject *parent = nullptr) : QObject(parent), bills(bill) {}
 
     [[nodiscard]]
     QString getCreditNumber() const { return currentCreditNumber; };
@@ -81,6 +82,7 @@ public:
 
     std::vector<std::shared_ptr<Credit>> percent;
     std::vector<std::shared_ptr<Credit>> years;
+    Bills& bills;
 
     void UpdateInteresRatesEvent();
 
@@ -93,12 +95,15 @@ public slots:
 
     void onUpdate();
 
+    void onPay(QString from);
+
 signals:
     void creditsChanged(QList<QObject*> credits, bool saveCurrent);
     void showWarning(QString message);
     void updateInterestRates(QList<QObject*> rates);
     void updateDates(QList<QObject*> dates);
     void showOk();
+    void updateBills(QList<QObject*> bills);
 
 protected:
     mutable backend::Api m_backend;

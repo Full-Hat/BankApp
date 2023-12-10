@@ -106,6 +106,21 @@ Column {
             }
         }
     }
+    Row {
+        ComboBox {
+            id: billsBox
+            editable: false
+            model: ListModel {
+                id: billsModel
+            }
+        }
+        Button {
+            text: "Pay"
+            onClicked: {
+                CtrCredits.onPay(billsBox.currentText);
+            }
+        }
+    }
 
     Grid {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -171,6 +186,14 @@ Column {
                 creditsView.currentIndex = 1;
                 creditsView.currentIndex = 0;
             }
+        }
+        function onUpdateBills(bills) {
+            billsModel.clear()
+            for (var i = 0; i < bills.length; i++) {
+                var credit = bills[i];
+                billsModel.append({"text": credit.number});
+            }
+            billsBox.currentIndex = 0
         }
         function onShowWarning(message) {
             popUp.item.localText = message;

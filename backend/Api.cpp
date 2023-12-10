@@ -489,6 +489,162 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
+    Api::resp_documents_get Api::GetDocuments(const QString &token, uint16_t quarter, uint16_t year) {
+        resp_documents_get result;
+
+        Get req;
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QUrl url(m_url_base + "tax-documents");
+        QUrlQuery query;
+
+        query.addQueryItem("quarter", QString::number(quarter));
+        query.addQueryItem("year", QString::number(year));
+
+        url.setQuery(query);
+
+        req.m_request.setUrl(url);
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        qDebug() << req.m_request.url();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        for (auto el : json.array()) {
+            resp_documents_get::data res;
+            auto json = el.toObject();
+            res.hashId = json["hashId"].toString();
+            res.sum = json["sum"].toInt();
+            res.date = json["date"].toString();
+            res.kind = json["kind"].toString();
+            result.datas.push_back(res);
+        }
+
+        return result;
+    }
+
+    Api::resp_documents_post Api::PostDocuments(const QString &token, double sum, std::tm date, DocumentKind documentKind) {
+        resp_documents_post result;
+
+        Post req;
+
+        std::stringstream date_str;
+        date_str << std::put_time(&date, "%Y-%m-%d");
+
+        QString document_kind;
+        switch (documentKind) {
+            case DocumentKind::ActOfWorkPerformed:
+                document_kind = "ActOfWorkPerformed";
+                break;
+            case DocumentKind::Declaration:
+                document_kind = "Declaration";
+                break;
+            default:
+                document_kind = "Error";
+        }
+
+        std::stringstream str;
+        str << std::fixed << std::setprecision(2) << sum;
+
+        req.SetUrl(m_url_base + "tax-documents");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["sum"] = QString::fromStdString(str.str());
+        req.m_json["date"] = QString::fromStdString(date_str.str());
+        req.m_json["documentKind"] = document_kind;
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        result.hashId = json["hashId"].toString();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        return result;
+    }
+
+    uint16_t Api::SendDocument(const QString &token, QString documentHashId, QString filePath) {
+        Post req(1);
+
+        req.SetUrl(m_url_base + "tax-documents/upload/" + documentHashId);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+        QFile* file = new QFile(filePath);
+        if (!file->open(QIODevice::ReadOnly)) {
+            qDebug() << "Could not open file!";
+            throw std::runtime_error("Can't open file");
+        }
+
+        QHttpPart filePart;
+        filePart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"file\"; filename=\"" + file->fileName() + "\"");
+        filePart.setBodyDevice(file);
+
+        multiPart->append(filePart);
+
+        QList<QByteArray> headerList = req.m_request.rawHeaderList();
+                foreach(QByteArray head, headerList) {
+                qDebug() << head << ":" << req.m_request.rawHeader(head);
+            }
+
+        auto reply = req.m_manager->post(req.m_request, multiPart);
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        CheckForError(*reply);
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    Api::file Api::GetDocument(const QString &token, QString hash) {
+        file result;
+
+        Get req;
+
+        req.SetUrl(m_url_base + "tax-documents/download/" + hash);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        QString downloadsPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+
+        //u"attachment; filename=detailed.pdf; filename*=UTF-8''detailed.pdf"
+        auto file_name = QString(reply->rawHeader("content-disposition"));
+        QRegularExpression regex("filename=(.*);");
+        QRegularExpressionMatch match = regex.match(file_name);
+        file_name = match.captured(1);
+
+        QFile file(downloadsPath + "/" + file_name);
+
+        QString filename;
+        int i = 1;
+        while (file.exists()) {
+            QFileInfo inf(file_name);
+
+            filename = QString(downloadsPath + "/" + inf.baseName() + "%1." + inf.suffix()).arg(i);
+            file.setFileName(filename);
+            ++i;
+        }
+        if (!file.open(QIODevice::WriteOnly)) {
+            qDebug() << "Could not open file!";
+            throw std::runtime_error("Can't open file");
+        }
+
+        // Write the response data to the file
+        file.write(reply->readAll());
+
+        result.file = reply->rawHeader("content-disposition");
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        return result;
+    }
+
 
 
     // Получение кредита процент срок

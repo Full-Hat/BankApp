@@ -44,10 +44,31 @@ Rectangle {
 
         Column {
             anchors.centerIn: parent
-            spacing: 10
+            spacing: 3
 
             Text {
-                text: hashId
+                color: "white"
+                text: date
+            }
+            Text {
+                color: "white"
+                text: years
+            }
+            Text {
+                color: "white"
+                text: interstrait
+            }
+            Text {
+                color: "white"
+                text: bodySum
+            }
+            Text {
+                color: "white"
+                text: sum
+            }
+            Text {
+                color: "white"
+                text: payedSum
             }
         }
     }

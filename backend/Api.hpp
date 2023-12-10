@@ -22,6 +22,12 @@ public:
             m_request.setRawHeader("Accept", "*/*");
             m_request.setTransferTimeout(100);
         }
+        Request(int) {
+            m_manager = new QNetworkAccessManager;
+            //m_request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data");
+            m_request.setRawHeader("Accept", "*/*");
+            m_request.setTransferTimeout(100);
+        }
 
         ~Request() {
             delete m_manager;
@@ -38,6 +44,11 @@ public:
     };
 
     struct Post : public Request {
+        Post(): Request() {
+        }
+        Post(int) : Request(1) {
+        }
+
         virtual QNetworkReply* send() override {
             QNetworkReply *reply = m_manager->post(m_request, QJsonDocument(m_json).toJson());
 
@@ -240,6 +251,65 @@ public:
 
     [[nodiscard]]
     uint16_t PayCredit(const QString &token, const QString &creditHashId, const QString &from);
+
+    struct resp_documents_get {
+        uint16_t code;
+
+        struct data {
+            QString hashId;
+            uint16_t sum;
+            QString date;
+            QString kind;
+        };
+        std::vector<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_documents_get GetDocuments(const QString &token, uint16_t quarter, uint16_t year);
+
+    enum class DocumentKind {
+        ActOfWorkPerformed,
+        Declaration
+    };
+
+    static QString toString(DocumentKind kind) {
+        switch (kind) {
+            case DocumentKind::ActOfWorkPerformed:
+                return "ActOfWorkPerformed";
+            case DocumentKind::Declaration:
+                return "Declaration";
+            default:
+                return "Unknown";
+        }
+    }
+
+    static DocumentKind toDocumentKind(const QString& kindStr) {
+        if (kindStr == "ActOfWorkPerformed") {
+            return DocumentKind::ActOfWorkPerformed;
+        } else if (kindStr == "Declaration") {
+            return DocumentKind::Declaration;
+        } else {
+            throw std::invalid_argument("Invalid DocumentKind string");
+        }
+    }
+
+    struct resp_documents_post {
+        uint16_t code;
+        QString hashId;
+    };
+
+    [[nodiscard]]
+    resp_documents_post PostDocuments(const QString &token, double sum, std::tm date, DocumentKind documentKind);
+
+    [[nodiscard]]
+    uint16_t SendDocument(const QString &token, QString documentHashId, QString filePath);
+
+    struct file {
+        uint16_t code;
+        QString file;
+    };
+    [[nodiscard]]
+    file GetDocument(const QString &token, QString hash);
 
 protected:
     void CheckForError(QNetworkReply &reply);
