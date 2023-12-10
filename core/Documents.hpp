@@ -4,12 +4,6 @@
 
 #pragma once
 
-//
-// Created by Full-Hat on 08/12/2023.
-//
-
-#pragma once
-
 #include "backend/Api.hpp"
 #include "core/Bills.hpp"
 
