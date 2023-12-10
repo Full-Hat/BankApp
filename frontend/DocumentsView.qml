@@ -2,6 +2,7 @@ import QtQuick 6.6
 import QtQuick.Controls 6.6
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import Qt5Compat.GraphicalEffects
 
 Column {
     id: documentsViewItem
@@ -9,6 +10,19 @@ Column {
     anchors.topMargin: 150
     anchors.verticalCenterOffset: 1000
     spacing: 100
+
+    Rectangle {
+        width: 300
+        height: 150
+        border.color: "gray"
+        border.width: 3
+        radius: 20
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        Text {
+            text: "Hello world"
+        }
+    }
 
     SwipeView {
         id: documentsView
@@ -102,7 +116,7 @@ Column {
                     "file" : document.file,
                     "date" : document.date,
                     "sum" : document.sum,
-                    "kind" : document.kind,
+                    "kind" : document.kindStr,
                 });
             }
 

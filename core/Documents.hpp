@@ -26,6 +26,7 @@ public:
     Q_PROPERTY(QString date READ getDate WRITE setDate)
     Q_PROPERTY(double sum READ getSum WRITE setSum)
     Q_PROPERTY(backend::Api::DocumentKind kind READ getKind WRITE setKind)
+    Q_PROPERTY(QString kindStr READ getKindStr)
 
 private:
     QString m_hashId;
@@ -46,6 +47,8 @@ public:
 
     double getSum() const { return m_sum; }
     void setSum(double sum) { m_sum = sum; }
+
+    QString getKindStr() { return backend::Api::toString(m_kind); }
 
     backend::Api::DocumentKind getKind() const { return m_kind; }
     void setKind(backend::Api::DocumentKind kind) { m_kind = kind; }
