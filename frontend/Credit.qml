@@ -7,10 +7,6 @@ Rectangle {
     height: 200
     width: 300
 
-    Text {
-
-    }
-
     Timer {
         id: timer
 
@@ -48,27 +44,27 @@ Rectangle {
 
             Text {
                 color: "white"
-                text: date
+                text: "Next payment " + date
             }
             Text {
                 color: "white"
-                text: years
+                text: "Period " + years
             }
             Text {
                 color: "white"
-                text: interstrait
+                text: "Interstreit " + interstrait
             }
             Text {
                 color: "white"
-                text: bodySum
+                text: "Full start sum " + bodySum
             }
             Text {
                 color: "white"
-                text: sum
+                text: "Alredy payed " + sum
             }
             Text {
                 color: "white"
-                text: payedSum
+                text: "Next payment " + payedSum
             }
         }
     }

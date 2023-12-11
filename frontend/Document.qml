@@ -34,10 +34,34 @@ Rectangle {
         Column {
             anchors.centerIn: parent
             spacing: 3
+            Text {
+                id: hashIdField
+                text: hashId
+                color: "white"
+            }
 
             Text {
+                id: fileField
+                text: file
                 color: "white"
-                text: hashId + date + sum.toString() + kind
+            }
+
+            Text {
+                id: dateField
+                text: date
+                color: "white"
+            }
+
+            Text {
+                id: sumField
+                text: sum
+                color: "white"
+            }
+
+            Text {
+                id: kindField
+                text: kind
+                color: "white"
             }
         }
     }

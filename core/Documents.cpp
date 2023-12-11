@@ -11,7 +11,18 @@ QList<QObject *> Documents::getDocuments(uint16_t quarter, uint16_t year) {
         return {};
     }
     backend_cards.clear();
+    backend_declaration.reset();
     for(const auto& data : res.datas) {
+        if (data.kind == backend::Api::toString(backend::Api::DocumentKind::Declaration)) {
+            backend_declaration = std::make_shared<Document>(
+                    data.hashId,
+                    QString(""),
+                    data.date,
+                    data.sum,
+                    backend::Api::toDocumentKind(data.kind)
+            );
+            continue;
+        }
         std::shared_ptr<Document> bill = std::make_shared<Document>(
                 data.hashId,
                 QString(""),
@@ -34,9 +45,28 @@ void Documents::onCurrentDocumentUpdate(const QString &newNumber) {
     this->currentDocumentNumber = newNumber;
 }
 
+bool containsNonLatin(const QString& str) {
+    for (int i = 0; i < str.length(); ++i) {
+        if (str[i].unicode() > 0x00FF) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Documents::onAddDeclaration(double sum, QString date, QString file_path) {
     if (sum == 0) {
         emit showWarning("Wrong values");
+        return;
+    }
+
+    if (file_path.contains(' ') || containsNonLatin(file_path)) {
+        emit showWarning("Invalid symbols in path");
+        return;
+    }
+
+    if (QFileInfo(file_path).size() > 10 * 1024 * 1024) {
+        emit showWarning("File is too large");
         return;
     }
 
@@ -57,12 +87,26 @@ void Documents::onAddDeclaration(double sum, QString date, QString file_path) {
         return;
     }
 
+    emit closeDialog();
+    getDocuments(current_quarter, current_year);
+    emit documentsChanged(getDocuments(current_quarter, current_year), backend_declaration.get(), true);
     emit showOk();
 }
 
 void Documents::onAddActOfWorkPerformed(double sum, QString date, QString file_path) {
     if (sum == 0) {
         emit showWarning("Wrong values");
+        return;
+    }
+
+    if (file_path.contains(' ') || containsNonLatin(file_path)) {
+        emit showWarning("Invalid symbols in path");
+        return;
+    }
+
+    auto fileSize = QFileInfo(QUrl::fromUserInput(file_path).toLocalFile()).size();
+    if (fileSize > 10 * 1024 * 1024) {
+        emit showWarning("File is too large");
         return;
     }
 
@@ -83,36 +127,17 @@ void Documents::onAddActOfWorkPerformed(double sum, QString date, QString file_p
         return;
     }
 
+    emit closeDialog();
+    getDocuments(current_quarter, current_year);
+    emit documentsChanged(getDocuments(current_quarter, current_year), backend_declaration.get(), true);
     emit showOk();
 }
 
 void Documents::onUpdate(uint16_t quarter, uint16_t year) {
-    auto res = m_backend.GetDocuments(CurrentUser::Get().GetToken(), quarter, year);
-    assert(res.code == 200);
-    if (res.code != 200) {
-        emit showWarning(m_backend.getLastError());
-        return;
-    }
+    current_quarter = quarter;
+    current_year = year;
 
-    auto &datas = res.datas;
-    using api = backend::Api;
-    for (auto &el : datas) {
-        backend_cards.push_back(std::make_shared<Document>(
-            el.hashId,
-            "file",
-            el.date,
-            el.sum,
-            api::toDocumentKind(el.kind)
-        ));
-    }
-
-    QList<QObject*> objs;
-    objs.reserve(backend_cards.size());
-    for (auto &el : backend_cards) {
-        objs.push_back(el.get());
-    }
-
-    emit documentsChanged(objs, true);
+    emit documentsChanged(getDocuments(quarter, year), backend_declaration.get(), true);
 }
 
 void Documents::onDownloadFile() {
@@ -125,4 +150,23 @@ void Documents::onDownloadFile() {
     emit showOk();
 }
 
+void Documents::onDownloadFile(QString hashId) {
+    auto res = m_backend.GetDocument(CurrentUser::Get().GetToken(), hashId);
+    if (res.code != 200) {
+        emit showWarning(m_backend.getLastError());
+        return;
+    }
 
+    emit showOk();
+}
+
+void Documents::onDeleteFile(QString hash) {
+    auto code = m_backend.RemoveDocument(CurrentUser::Get().GetToken(), hash);
+    if (code != 200) {
+        emit showWarning(m_backend.getLastError());
+        return;
+    }
+
+    emit documentsChanged(getDocuments(current_quarter, current_year), backend_declaration.get(), false);
+    emit showOk();
+}

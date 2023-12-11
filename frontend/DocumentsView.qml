@@ -9,18 +9,147 @@ Column {
 
     anchors.topMargin: 150
     anchors.verticalCenterOffset: 1000
-    spacing: 100
+    spacing: 10
+
+    property bool declaration_loaded: false
+    property string hashId
+    property string file
+    property string date
+    property double sum
+    property string kind
 
     Rectangle {
         width: 300
         height: 150
-        border.color: "gray"
+        border.color: declaration_loaded ? "gray" : "red"
         border.width: 3
         radius: 20
         anchors.horizontalCenter: parent.horizontalCenter
 
-        Text {
-            text: "Hello world"
+        Column {
+            visible: declaration_loaded
+            anchors.centerIn: parent
+            Text {
+                id: hashIdField
+                text: hashId
+            }
+
+            Text {
+                id: fileField
+                text: file
+            }
+
+            Text {
+                id: dateField
+                text: date
+            }
+
+            Text {
+                id: sumField
+                text: sum
+            }
+
+            Text {
+                id: kindField
+                text: kind
+            }
+        }
+    }
+
+    Text {
+        id: text_documents_title1
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        font.pixelSize: 23
+        horizontalAlignment: Text.AlignHCenter
+        text: "Your -^- Declaration"
+    }
+
+    Row {
+        TextField {
+            id: yearField
+            placeholderText: "Enter year"
+            validator: IntValidator { bottom: 2023; top: 9999 }
+        }
+        TextField {
+            id: quarterField
+            placeholderText: "Enter quarter"
+            validator: IntValidator { bottom: 1; top: 4 }
+        }
+        Button {
+            text: "Update period"
+            onClicked: {
+                CtrDocuments.onUpdate(parseInt(quarterField.text), parseInt(yearField.text))
+            }
+        }
+    }
+
+    Row {
+        TextField {
+            id: dateInput
+            placeholderText: "(yyyy-MM-dd)"
+            validator: RegularExpressionValidator {
+                regularExpression: /^(19|20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/
+            }
+            onTextChanged: {
+                var date = Date.fromLocaleString(Qt.locale(), text, "yyyy-MM-dd")
+                console.log("Entered date: " + date.toLocaleDateString(Qt.locale()))
+            }
+        }
+
+        TextField {
+            id: sumData
+            placeholderText: "sum > 10";
+            validator: DoubleValidator {
+                bottom: 0.01
+                decimals: 2
+                notation: DoubleValidator.StandardNotation
+                top: Infinity
+            }
+        }
+
+        Button {
+            id: add_declaration
+
+            text: "Add declaration"
+            width: 150
+
+            onClicked: {
+                console.log("Add document button")
+                fileDialog.ok = function (path) {
+                    CtrDocuments.onAddDeclaration(Number(sumData.text.replace(",", ".")), dateInput.text, path)
+                }
+                fileDialog.open()
+            }
+        }
+    }
+
+    Grid {
+        anchors.horizontalCenter: parent.horizontalCenter
+        columns: 2
+        spacing: 10
+
+        Button {
+            id: remove_declaration
+
+            text: "Remove declaration"
+            width: 150
+
+            onClicked: {
+                CtrDocuments.onDeleteFile(hashId)
+            }
+        }
+
+        Button {
+            id: download_declaration
+
+            text: "Download declaration"
+            width: 150
+
+            onClicked: {
+                console.log("Add document button")
+                CtrDocuments.onDownloadFile(documentsViewItem.hashId)
+            }
         }
     }
 
@@ -70,6 +199,47 @@ Column {
         text: "Your -^- Documents"
     }
 
+    Row {
+        TextField {
+            id: dateInput1
+            placeholderText: "(yyyy-MM-dd)"
+            validator: RegularExpressionValidator {
+                regularExpression: /^(19|20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/
+            }
+            onTextChanged: {
+                var date = Date.fromLocaleString(Qt.locale(), text, "yyyy-MM-dd")
+                console.log("Entered date: " + date.toLocaleDateString(Qt.locale()))
+            }
+        }
+
+        TextField {
+            id: sumData1
+            placeholderText: "sum > 10";
+            validator: DoubleValidator {
+                bottom: 0.01
+                decimals: 2
+                notation: DoubleValidator.StandardNotation
+                top: Infinity
+            }
+        }
+
+        Button {
+            id: add_declaration1
+
+            text: "Add act"
+            width: 150
+
+            onClicked: {
+                console.log("Add document button")
+                fileDialog.ok = function (path) {
+                    console.log(Number(sumData1.text.replace(",", ".")) + " << Number")
+                    CtrDocuments.onAddActOfWorkPerformed(Number(sumData1.text.replace(",", ".")), dateInput1.text, path)
+                }
+                fileDialog.open()
+            }
+        }
+    }
+
     Grid {
         anchors.horizontalCenter: parent.horizontalCenter
         columns: 2
@@ -78,13 +248,11 @@ Column {
         Button {
             id: add
 
-            text: "Try"
+            text: "Remove"
             width: 150
 
             onClicked: {
-                console.log("Add document button")
-                fileDialog.open()
-                CtrDocuments.onAddActOfWorkPerformed(1.1, "2023-12-09", "/Users/full-hat/Downloads/milan-vasek-island-finalb.jpg")
+                CtrDocuments.onDeleteFile(CtrDocuments.onCurrentDocumentUpdate(documentListModel.get(documents.currentIndex).hashId))
             }
         }
 
@@ -102,7 +270,7 @@ Column {
     }
 
     Connections {
-        function onDocumentsChanged(documents, saveCurrent) {
+        function onDocumentsChanged(documents, declaration, saveCurrent) {
             console.log("onDocumentsChanged")
             let modelSize = documentListModel.count;
             let currentIndex = documentsView.currentIndex;
@@ -118,6 +286,17 @@ Column {
                     "sum" : document.sum,
                     "kind" : document.kindStr,
                 });
+            }
+            if (declaration !== null) {
+                declaration_loaded = true
+                hashId = declaration.hashId
+                file = declaration.file
+                date = declaration.date
+                sum = declaration.sum
+                kind = declaration.kindStr
+            }
+            else {
+                declaration_loaded = false
             }
 
             console.log("documents count " + documentListModel.count)
@@ -155,6 +334,11 @@ Column {
             popUpInfo.item.open()
         }
 
+        function onCloseDialog() {
+            console.log("Called on close");
+            fileDialog.close()
+        }
+
         target: CtrDocuments
     }
     Loader {
@@ -173,9 +357,12 @@ Column {
     }
     FileDialog {
         id: fileDialog
+
+        property var ok
+
         title: "Please choose a file"
         onAccepted: {
-            console.log("You chose: " + fileDialog.fileUrl)
+            ok(fileDialog.currentFile)
         }
     }
 }

@@ -7,9 +7,9 @@ Dialog {
     property var no: null
     property var ok: null
 
-    height: 240
+    height: 130
     standardButtons: Dialog.Ok | Dialog.Cancel
-    title: "Enter a string"
+    // title: "Enter a string"
     width: 500
 
     onAccepted: {
@@ -26,6 +26,11 @@ Dialog {
         additionalInput.text = "";
     }
 
+    Rectangle {
+        color: "transparent"
+        width: 1
+        height: 5
+    }
     TextField {
         id: additionalInput
 
@@ -33,7 +38,7 @@ Dialog {
         font.family: "Verdana"
         font.pixelSize: 12
         horizontalAlignment: Text.AlignHCenter
-        placeholderText: qsTr("enter additional input here")
+        placeholderText: qsTr("Enter target number")
         width: parent.width
     }
     TextField {
@@ -45,7 +50,7 @@ Dialog {
         font.family: "Verdana"
         font.pixelSize: 12
         horizontalAlignment: Text.AlignHCenter
-        placeholderText: qsTr("enter here")
+        placeholderText: qsTr("Enter sum [0.01, infinity)")
         width: parent.width
 
         validator: DoubleValidator {

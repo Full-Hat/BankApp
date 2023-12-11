@@ -22,15 +22,18 @@ Q_OBJECT
 
     Q_PROPERTY(QString number READ getNumber WRITE setNumber)
     QString number;
-    Q_PROPERTY(size_t value READ getValue WRITE setValue)
-    size_t value;
+    Q_PROPERTY(double value READ getValue WRITE setValue)
+    double value;
     Q_PROPERTY(bool isBlocked READ getIsBlocked WRITE setIsBlocked)
     bool isBlocked;
+    Q_PROPERTY(QString name READ getName WRITE setName)
+    QString name;
 
 public:
-    Bill(QString number, size_t  value, bool isBlocked = false) {
+    Bill(QString number, double  value, QString name, bool isBlocked = false) {
         this->number = number;
         this->value = value;
+        this->name = name;
         this->isBlocked = isBlocked;
     }
 
@@ -39,12 +42,16 @@ public:
     void setNumber(QString number) { this->number = number; };
 
     [[nodiscard]]
-    size_t getValue() const { return value; };
-    void setValue(size_t value) { this->value = value; };
+    double getValue() const { return value; };
+    void setValue(double value) { this->value = value; };
 
     [[nodiscard]]
     bool getIsBlocked() const { return isBlocked; };
     void setIsBlocked(bool isBlocked) { this->isBlocked = isBlocked; };
+
+    [[nodiscard]]
+    QString getName() const { return name; };
+    void setName(QString name) { this->name = name; };
 };
 
 class Bills : public QObject{

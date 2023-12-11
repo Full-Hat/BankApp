@@ -154,7 +154,8 @@ Column {
                 billListModel.append({
                         "billNumber": bill.number,
                         "balance": String(bill.value),
-                        "isBlocked": bill.isBlocked
+                        "isBlocked": bill.isBlocked,
+                        "name": bill.name
                     });
             }
 

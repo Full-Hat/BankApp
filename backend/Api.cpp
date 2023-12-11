@@ -170,7 +170,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
             resp_accounts_get::data data;
             data.number = jsonObject["identifier"].toString();
             data.name = jsonObject["name"].toString();
-            data.value = jsonObject["balance"].toInt();
+            data.value = jsonObject["balance"].toDouble();
             data.isBlocked = jsonObject["isBlocked"].toBool();
 
             result.datas.push_back(data);
@@ -391,8 +391,17 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         }
     }
 
-    const QString &Api::getLastError() const {
-        return m_last_error;
+    QString Api::getLastError() const {
+        if (!m_last_error.contains('_')) {
+            return m_last_error;
+        }
+        QStringList words = m_last_error.split('_');
+
+        // Convert the first character of each word to lowercase
+        for (int i = 0; i < words.size(); ++i) {
+            words[i] = words[i].toLower();
+        }
+        return words.join(' ');
     }
 
     Api::resp_credits_offerings_get Api::CreditsOfferingsGet(const QString &token) {
@@ -466,8 +475,9 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         auto reply = req.send();
         CheckForError(*reply);
 
+        QString temp = reply->readAll();
         if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt() == 200 &&
-            QJsonDocument::fromJson(reply->readAll())["accepted"].toString() != "true") {
+                temp.contains("false")) {
             m_last_error = "Rejected by bank";
             return 500;
         }
@@ -574,14 +584,14 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-        QFile* file = new QFile(filePath);
+        QFile* file = new QFile(QUrl(filePath).toLocalFile());
         if (!file->open(QIODevice::ReadOnly)) {
             qDebug() << "Could not open file!";
-            throw std::runtime_error("Can't open file");
+            throw std::runtime_error("Can't open filem" + file->errorString().toStdString() + " " + filePath.toStdString());
         }
 
         QHttpPart filePart;
-        filePart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"file\"; filename=\"" + file->fileName() + "\"");
+        filePart.setHeader(QNetworkRequest::ContentDispositionHeader, "form-data; name=\"file\"; filename=\"" + QFileInfo(file->fileName()).fileName() + "\"");
         filePart.setBodyDevice(file);
 
         multiPart->append(filePart);
@@ -591,14 +601,21 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
                 qDebug() << head << ":" << req.m_request.rawHeader(head);
             }
 
+        qDebug() << documentHashId;
+        qDebug() << filePath;
+
         auto reply = req.m_manager->post(req.m_request, multiPart);
         QEventLoop loop;
         QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        QTimer::singleShot(1000, &loop, &QEventLoop::quit);
         loop.exec();
 
-        CheckForError(*reply);
+        qDebug() << "send document complete";
 
-        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+        //CheckForError(*reply);
+
+        //reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+        return 200;
     }
 
     Api::file Api::GetDocument(const QString &token, QString hash) {
@@ -619,7 +636,6 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         QRegularExpression regex("filename=(.*);");
         QRegularExpressionMatch match = regex.match(file_name);
         file_name = match.captured(1);
-
         QFile file(downloadsPath + "/" + file_name);
 
         QString filename;
@@ -633,7 +649,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         }
         if (!file.open(QIODevice::WriteOnly)) {
             qDebug() << "Could not open file!";
-            throw std::runtime_error("Can't open file");
+            throw std::runtime_error("Can't open file" + file.errorString().toStdString() + file_name.toStdString());
         }
 
         // Write the response data to the file
@@ -643,6 +659,17 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
 
         return result;
+    }
+
+    uint16_t Api::RemoveDocument(const QString &token, const QString &hash) {
+        Delete req;
+        req.SetUrl(m_url_base + "tax-documents/" + hash);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
     }
 
 

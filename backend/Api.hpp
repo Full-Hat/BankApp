@@ -26,7 +26,7 @@ public:
             m_manager = new QNetworkAccessManager;
             //m_request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data");
             m_request.setRawHeader("Accept", "*/*");
-            m_request.setTransferTimeout(100);
+            m_request.setTransferTimeout(300);
         }
 
         ~Request() {
@@ -137,7 +137,7 @@ public:
         struct data {
             QString name;
             QString number;
-            size_t value;
+            double value;
             bool isBlocked;
         };
         std::vector<data> datas;
@@ -311,6 +311,9 @@ public:
     [[nodiscard]]
     file GetDocument(const QString &token, QString hash);
 
+    [[nodiscard]]
+    uint16_t RemoveDocument(const QString &token, const QString &hash);
+
 protected:
     void CheckForError(QNetworkReply &reply);
 
@@ -323,7 +326,7 @@ protected:
     QString m_last_error = "";
 
 public:
-    const QString &getLastError() const;
+    QString getLastError() const;
 };
 
 } // backend

@@ -15,7 +15,7 @@ Dialog {
    TextField {
        id: textInput
        width: parent.width
-       placeholderText: qsTr("enter here")
+       placeholderText: qsTr("enter name here")
        font.pixelSize: 12
        horizontalAlignment: Text.AlignHCenter
        font.family: "Verdana"

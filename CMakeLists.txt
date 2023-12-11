@@ -62,8 +62,10 @@ qt_add_qml_module(${ProjectName}
         RESOURCES
         "frontend/images/card_background.png"
         "frontend/images/card_background1.png"
+        "frontend/images/account_background.jpeg"
         "frontend/fonts/sfpro.otf"
         "frontend/fonts/Markdown.ttf"
+        "frontend/images/logo.jpeg"
         RESOURCE_PREFIX /
         RESOURCES resources.qrc
 )

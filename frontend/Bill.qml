@@ -15,7 +15,7 @@ Rectangle {
     BorderImage {
         id: billImage
         anchors.fill: parent
-        source: "images/card_background.png"
+        source: "images/account_background.jpeg"
 
         property bool rounded: true
         property bool adapt: true
@@ -34,18 +34,28 @@ Rectangle {
             }
         }
 
-        Text {
+        Column {
             anchors.centerIn: parent
-            anchors.verticalCenterOffset: -20
-            text: billNumber
-            color: "white"
-        }
+            spacing: 20
+            Text {
+                //anchors.verticalCenterOffset: 20
+                text: "Name: " + name
+                color: "white"
+            }
 
-        Text {
-            anchors.centerIn: parent
-            anchors.verticalCenterOffset: 20
-            text: "Balance: " + balance
-            color: "white"
+            TextEdit {
+                //anchors.verticalCenterOffset: -20
+                color: "white"
+                text: billNumber
+                readOnly: true
+                selectByMouse: true
+            }
+
+            Text {
+                //anchors.verticalCenterOffset: 20
+                text: "Balance: " + balance
+                color: "white"
+            }
         }
     }
 

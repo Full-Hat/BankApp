@@ -93,7 +93,7 @@ Column {
         Button {
             id: tramsfer_bill
 
-            text: "Transfer to Bill"
+            text: "Transfer to Accound"
             width: 150
 
             onClicked: {

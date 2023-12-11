@@ -76,6 +76,7 @@ void Credits::onAddCredit(double sum, uint16_t years) {
         return;
     }
 
+    emit creditsChanged(getCredits(), false);
     emit showOk();
 }
 
@@ -160,5 +161,6 @@ void Credits::onPay(QString from) {
         return;
     }
 
+    emit creditsChanged(getCredits(), true);
     emit showOk();
 }

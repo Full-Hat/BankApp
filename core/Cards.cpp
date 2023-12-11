@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include <QDateTime>
+
 std::shared_ptr<Card> CardsArray::getByNum(QString number) {
     auto res = std::ranges::find_if(backend_cards, [&](const std::shared_ptr<Card> &el) { return el->getNumber() == number; });
     if (res == backend_cards.end()) {
@@ -133,6 +135,8 @@ QList<QObject *> CardsArray::getHistory(const QString &target) {
         row->target = el.target;
         row->value = el.value;
         row->date = el.date;
+
+        row->date = QDateTime::fromString(row->date, Qt::ISODate).toString("yyyy-MM-dd");
     }
 
     QList<QObject*> history_obj;

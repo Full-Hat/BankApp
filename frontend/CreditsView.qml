@@ -130,7 +130,7 @@ Column {
         Button {
             id: add
 
-            text: "Try"
+            text: "Try get credit"
             width: 150
 
             onClicked: {

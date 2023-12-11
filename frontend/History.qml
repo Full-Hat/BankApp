@@ -84,6 +84,12 @@ Page {
                 }
                 console.log(history.length);
                 listModel.clear();
+                listModel.append({
+                    "source": "source",
+                    "target": "target",
+                    "value": "value",
+                    "date": "date"
+                })
                 for (var i = 0; i < history.length; i++) {
                     listModel.append({
                             "source": history[i].source,
@@ -110,6 +116,12 @@ Page {
                 }
                 console.log(history.length);
                 listModel.clear();
+                listModel.append({
+                    "source": "source",
+                    "target": "target",
+                    "value": "value",
+                    "date": "date"
+                })
                 for (var i = 0; i < history.length; i++) {
                     listModel.append({
                             "source": history[i].source,

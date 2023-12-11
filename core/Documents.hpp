@@ -57,6 +57,7 @@ Q_OBJECT
 protected:
 
     QList<std::shared_ptr<Document>> backend_cards;
+    std::shared_ptr<Document> backend_declaration;
 
     Q_PROPERTY(QString currentDocumentNumber READ getDocumentNumber WRITE setDocumentNumber)
     QString currentDocumentNumber;
@@ -67,6 +68,9 @@ public:
     [[nodiscard]]
     QString getDocumentNumber() const { return currentDocumentNumber; };
     void setDocumentNumber(const QString &cardNumber) { currentDocumentNumber = cardNumber; };
+
+    uint16_t current_quarter = 0;
+    uint16_t current_year = 0;
 
     // Iterated through array to get pointers, need to be cached
     [[nodiscard]]
@@ -79,14 +83,18 @@ public slots:
     void onAddDeclaration(double sum, QString date, QString file_path);
 
     void onDownloadFile();
+    void onDownloadFile(QString hashId);
+
+    void onDeleteFile(QString hash);
 
     void onUpdate(uint16_t quarter, uint16_t year);
 
 signals:
-    void documentsChanged(QList<QObject*> documents, bool saveCurrent);
+    void documentsChanged(QList<QObject*> documents, QObject* declaration, bool saveCurrent);
     void showWarning(QString message);
     void showOk();
     void updateBills(QList<QObject*> bills);
+    void closeDialog();
 
 protected:
     mutable backend::Api m_backend;

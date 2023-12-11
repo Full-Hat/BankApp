@@ -24,11 +24,17 @@ public:
 
 private:
     QString hashId;
+    // next payment
     QString date;
+    // credit period
     int years;
+    // interstreit
     double interstrait;
+    // Full credit sum
     double bodySum;
+    // already paid sum
     double sum;
+    // next payment sum
     double payedSum;
 
 public:

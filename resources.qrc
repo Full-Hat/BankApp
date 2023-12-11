@@ -25,6 +25,8 @@
 	<qresource prefix="frontend/images">
 		<file>card_background.png</file>
 		<file>card_background1.png</file>
+		<file>account_background.jpeg</file>
+		<file>logo.jpeg</file>
 	</qresource>
 	<qresource prefix="frontend/fonts">
 		<file>sfpro.otf</file>
