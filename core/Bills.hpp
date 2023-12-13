@@ -10,6 +10,9 @@
 #include "backend/Api.hpp"
 #include "User.hpp"
 
+#define ApiObj backend::Api
+
+
 /*!
  * @brief Manage one bill instance
  *
@@ -56,6 +59,8 @@ public:
 
 class Bills : public QObject{
     Q_OBJECT
+
+protected:
 
     Q_PROPERTY(QList<QObject*> bills READ getBills)
     QList<std::shared_ptr<Bill>> backend_bills;
@@ -105,5 +110,5 @@ signals:
     void showHistory();
 
 protected:
-    mutable backend::Api m_backend;
+    mutable ApiObj *m_backend = new backend::Api();
 };

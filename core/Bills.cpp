@@ -16,7 +16,7 @@ std::shared_ptr<Bill> Bills::getByNum(QString number) {
 }
 
 QList<QObject *> Bills::getBills() {
-    auto res = m_backend.AccountsGet(CurrentUser::Get().GetToken());
+    auto res = m_backend->AccountsGet(CurrentUser::Get().GetToken());
     if (res.code != 200) {
         return {};
     }
@@ -47,10 +47,10 @@ void Bills::onBillTransfer(const QString &target, const double value) {
               " to " << target.toStdString() << std::endl;
 
 
-    auto code = m_backend.TransferAccountToAccount(currentBillNumber, target, value, CurrentUser::Get().GetToken());
+    auto code = m_backend->TransferAccountToAccount(currentBillNumber, target, value, CurrentUser::Get().GetToken());
 
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 
@@ -61,10 +61,10 @@ void Bills::onBlocked(bool block) {
     std::cout << "[backend] " << (block ? "Block" : "Unblock") << " bill " <<
               currentBillNumber.toStdString() << std::endl;
 
-    auto code = m_backend.AccountBlock(this->getByNum(currentBillNumber)->getNumber(), CurrentUser::Get().GetToken());
+    auto code = m_backend->AccountBlock(this->getByNum(currentBillNumber)->getNumber(), CurrentUser::Get().GetToken());
 
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 
@@ -80,7 +80,7 @@ void Bills::onHistory(const QString &target) {
         emit updateHistory(objs);
     }
     catch (std::runtime_error &err) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
     }
 }
 
@@ -99,9 +99,9 @@ void Bills::printBills() {
 }
 
 QList<QObject *> Bills::getHistory(const QString &target) {
-    auto res = m_backend.History(CurrentUser::Get().GetToken());
+    auto res = m_backend->History(CurrentUser::Get().GetToken());
     if (res.code != 200) {
-        throw std::runtime_error(m_backend.getLastError().toStdString());
+        throw std::runtime_error(m_backend->getLastError().toStdString());
     }
 
     history.clear();
@@ -139,10 +139,10 @@ QList<QObject *> Bills::getHistory(const QString &target) {
 void Bills::onRemoveBill(const QString &target) {
     std::cout << "[backend] " << "bill removed bill " << target.toStdString() << std::endl;
 
-    auto code = m_backend.AccountsRemove(target, CurrentUser::Get().GetToken());
+    auto code = m_backend->AccountsRemove(target, CurrentUser::Get().GetToken());
 
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 
@@ -156,10 +156,10 @@ void Bills::onAddBill(const QString &name) {
         emit showWarning("Name can not be empty");
         return;
     }
-    auto code = m_backend.AccountsAdd(CurrentUser::Get().GetToken(), name);
+    auto code = m_backend->AccountsAdd(CurrentUser::Get().GetToken(), name);
 
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 

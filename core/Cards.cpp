@@ -18,7 +18,7 @@ std::shared_ptr<Card> CardsArray::getByNum(QString number) {
 }
 
 QList<QObject *> CardsArray::getCards() {
-    auto res = m_backend.CardsGet(CurrentUser::Get().GetToken());
+    auto res = m_backend->CardsGet(CurrentUser::Get().GetToken());
     if (res.code != 200) {
         return {};
     }
@@ -46,10 +46,10 @@ void CardsArray::onCardTransfer(const QString &target, double value) {
         currentCardNumber.toStdString() <<
         " to " << target.toStdString() << std::endl;
 
-    auto resp = m_backend.CardsGetDetails(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
-    auto code = m_backend.TransferCardToCard(resp.number, target, value, CurrentUser::Get().GetToken());
+    auto resp = m_backend->CardsGetDetails(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+    auto code = m_backend->TransferCardToCard(resp.number, target, value, CurrentUser::Get().GetToken());
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 
@@ -61,10 +61,10 @@ void CardsArray::onBillTransfer(const QString &target, double value) {
               currentCardNumber.toStdString() <<
               " to " << target.toStdString() << std::endl;
 
-    auto resp = m_backend.CardsGetDetails(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
-    auto code = m_backend.TransferCardToAccount(resp.number, target, value, CurrentUser::Get().GetToken());
+    auto resp = m_backend->CardsGetDetails(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+    auto code = m_backend->TransferCardToAccount(resp.number, target, value, CurrentUser::Get().GetToken());
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 
@@ -75,9 +75,9 @@ void CardsArray::onBlocked(bool block) {
     std::cout << "[backend] " << (block ? "Block" : "Unblock") << " card " <<
         currentCardNumber.toStdString() << std::endl;
 
-    auto code = m_backend.CardsBlock(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+    auto code = m_backend->CardsBlock(this->getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 
@@ -93,7 +93,7 @@ void CardsArray::onHistory(const QString &target) {
         emit updateHistory(objs);
     }
     catch (std::runtime_error &err) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
     }
 }
 
@@ -116,14 +116,14 @@ void CardsArray::printCards() {
 }
 
 QList<QObject *> CardsArray::getHistory(const QString &target) {
-    auto res = m_backend.History(CurrentUser::Get().GetToken());
+    auto res = m_backend->History(CurrentUser::Get().GetToken());
     if (res.code != 200) {
-        throw std::runtime_error(m_backend.getLastError().toStdString());
+        throw std::runtime_error(m_backend->getLastError().toStdString());
     }
 
     history.clear();
     for (auto el : res.datas) {
-        auto res = m_backend.CardsGetDetails(getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
+        auto res = m_backend->CardsGetDetails(getByNum(currentCardNumber)->getId(), CurrentUser::Get().GetToken());
         // Check filter
         if (el.source != res.number && el.target != res.number) {
             continue;
@@ -155,9 +155,9 @@ void CardsArray::onRemoveCard(const QString &target) {
     auto id = std::find_if(backend_cards.begin(), backend_cards.end(), [&](const std::shared_ptr<Card> &c) {
         return c->getNumber() == target;
     })->get()->getId();
-    auto code = m_backend.CardsRemove(id, CurrentUser::Get().GetToken());
+    auto code = m_backend->CardsRemove(id, CurrentUser::Get().GetToken());
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
 
@@ -166,9 +166,9 @@ void CardsArray::onRemoveCard(const QString &target) {
 
 void CardsArray::onAddCard() {
     std::cout << "[backend] " << "card added" << std::endl;
-    auto code = m_backend.CardsAdd(CurrentUser::Get().GetToken());
+    auto code = m_backend->CardsAdd(CurrentUser::Get().GetToken());
     if (code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
     emit cardsCardsChanged(getCards(), false);
@@ -176,10 +176,10 @@ void CardsArray::onAddCard() {
 
 void CardsArray::onDetails() {
     auto id = this->getByNum(currentCardNumber)->getId();
-    auto result = m_backend.CardsGetDetails(id, CurrentUser::Get().GetToken());
+    auto result = m_backend->CardsGetDetails(id, CurrentUser::Get().GetToken());
 
     if (result.code != 200) {
-        emit showWarning(m_backend.getLastError());
+        emit showWarning(m_backend->getLastError());
         return;
     }
     emit cardsDetails(result.code, result.number, result.date, result.cvv, result.value);

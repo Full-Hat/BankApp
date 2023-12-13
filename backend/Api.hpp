@@ -9,92 +9,99 @@
 
 namespace backend {
 
+class Api;
+struct Request;
+struct Post;
+struct Get;
+struct Delete;
+struct Put;
+
+struct Request {
+    Request() {
+        m_manager = new QNetworkAccessManager;
+        m_request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        m_request.setRawHeader("Accept", "*/*");
+        m_request.setTransferTimeout(100000);
+    }
+    Request(int) {
+        m_manager = new QNetworkAccessManager;
+        //m_request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data");
+        m_request.setRawHeader("Accept", "*/*");
+        m_request.setTransferTimeout(300);
+    }
+
+    ~Request() {
+        delete m_manager;
+    }
+
+    virtual QNetworkReply* send() = 0;
+    void SetUrl(const QString &url) {
+        m_request.setUrl(QUrl(url));
+    }
+
+    QNetworkRequest m_request;
+    QNetworkAccessManager *m_manager;
+    QJsonObject m_json;
+};
+
+struct Post : public Request {
+    Post(): Request() {
+    }
+    Post(int) : Request(1) {
+    }
+
+    virtual QNetworkReply* send() override {
+        QNetworkReply *reply = m_manager->post(m_request, QJsonDocument(m_json).toJson());
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        return reply;
+    }
+};
+
+struct Get : public Request {
+    virtual QNetworkReply* send() override {
+        QNetworkReply *reply = m_manager->get(m_request);
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        return reply;
+    }
+};
+
+struct Delete : public Request {
+    virtual QNetworkReply* send() override {
+        QNetworkReply *reply = m_manager->deleteResource(m_request);
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        return reply;
+    }
+};
+
+struct Put : public Request {
+    virtual QNetworkReply* send() override {
+        QNetworkReply *reply = m_manager->put(m_request, QJsonDocument(m_json).toJson());
+
+        QEventLoop loop;
+        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        return reply;
+    }
+};
+
 class Api : public QObject {
     Q_OBJECT
 public:
     Api();
     void testConnection();
-
-    struct Request {
-        Request() {
-            m_manager = new QNetworkAccessManager;
-            m_request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-            m_request.setRawHeader("Accept", "*/*");
-            m_request.setTransferTimeout(100);
-        }
-        Request(int) {
-            m_manager = new QNetworkAccessManager;
-            //m_request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data");
-            m_request.setRawHeader("Accept", "*/*");
-            m_request.setTransferTimeout(300);
-        }
-
-        ~Request() {
-            delete m_manager;
-        }
-
-        virtual QNetworkReply* send() = 0;
-        void SetUrl(const QString &url) {
-            m_request.setUrl(QUrl(url));
-        }
-
-        QNetworkRequest m_request;
-        QNetworkAccessManager *m_manager;
-        QJsonObject m_json;
-    };
-
-    struct Post : public Request {
-        Post(): Request() {
-        }
-        Post(int) : Request(1) {
-        }
-
-        virtual QNetworkReply* send() override {
-            QNetworkReply *reply = m_manager->post(m_request, QJsonDocument(m_json).toJson());
-
-            QEventLoop loop;
-            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-            loop.exec();
-
-            return reply;
-        }
-    };
-
-    struct Get : public Request {
-        virtual QNetworkReply* send() override {
-            QNetworkReply *reply = m_manager->get(m_request);
-
-            QEventLoop loop;
-            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-            loop.exec();
-
-            return reply;
-        }
-    };
-
-    struct Delete : public Request {
-        virtual QNetworkReply* send() override {
-            QNetworkReply *reply = m_manager->deleteResource(m_request);
-
-            QEventLoop loop;
-            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-            loop.exec();
-
-            return reply;
-        }
-    };
-
-    struct Put : public Request {
-        virtual QNetworkReply* send() override {
-            QNetworkReply *reply = m_manager->put(m_request, QJsonDocument(m_json).toJson());
-
-            QEventLoop loop;
-            QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-            loop.exec();
-
-            return reply;
-        }
-    };
 
     QNetworkRequest GetDefaultHeader();
 
@@ -144,7 +151,7 @@ public:
     };
 
     [[nodiscard]]
-    resp_accounts_get AccountsGet(const QString &token);
+    virtual resp_accounts_get AccountsGet(const QString &token);
 
     [[nodiscard]]
     uint16_t AccountsAdd(const QString &token, const QString &name);
@@ -165,7 +172,7 @@ public:
     };
 
     [[nodiscard]]
-    resp_cards_get CardsGet(const QString &token);
+    virtual resp_cards_get CardsGet(const QString &token);
 
     [[nodiscard]]
     uint16_t CardsAdd(const QString &token);
@@ -320,7 +327,7 @@ protected:
 protected:
     QNetworkAccessManager *m_manager;
 
-    QString m_url_base = "http://localhost/api/";
+    QString m_url_base = "http://104.248.160.105/api/";
     uint16_t m_port = 80;
 
     QString m_last_error = "";

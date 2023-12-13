@@ -6,6 +6,7 @@
     "qtbase",
     "qtdeclarative",
     "qt5compat",
-    "qt5-graphicaleffects"
+    "qt5-graphicaleffects",
+    "gtest"
   ]
 }

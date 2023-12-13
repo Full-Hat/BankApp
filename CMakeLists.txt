@@ -8,8 +8,11 @@ set(PROJECT_VERSION_MINOR 0)
 
 set(CMAKE_CXX_STANDARD 20)
 
+enable_testing()
+
 # Link QT6
 find_package(Qt6 COMPONENTS Core Quick Widgets Network Core5Compat REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 set(ProjectName BankApp)
 qt_standard_project_setup()
@@ -33,6 +36,23 @@ qt_add_executable(${ProjectName}
         core/Credits.hpp
         core/Documents.cpp
         core/Documents.hpp
+        backend/ApiPublic.hpp
+        backend/ApiTest.hpp
+)
+
+qt_add_executable(test_app
+        test.cpp
+        core/Bills.cpp
+        core/Bills.hpp
+        core/History.hpp
+        backend/Api.cpp
+        backend/Api.hpp
+        core/User.hpp
+        core/User.cpp
+        test_api.hpp
+        core/Cards.cpp
+        core/Cards.hpp
+        backend/ApiTest.hpp
 )
 
 qt_add_qml_module(${ProjectName}
@@ -77,3 +97,11 @@ set_target_properties(${ProjectName} PROPERTIES
 )
 
 target_link_libraries(${ProjectName} PRIVATE Qt6::Core Qt6::Quick Qt6::Widgets Qt6::Core5Compat Qt6::Network)
+
+target_link_libraries(${ProjectName} PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+
+target_link_libraries(test_app PRIVATE Qt6::Core Qt6::Quick Qt6::Widgets Qt6::Core5Compat Qt6::Network)
+
+target_link_libraries(test_app PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+
+include_directories(./)

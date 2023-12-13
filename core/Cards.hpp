@@ -123,5 +123,5 @@ signals:
     void showHistory();
 
 protected:
-    mutable backend::Api m_backend;
+    mutable backend::Api* m_backend = new backend::Api();
 };
