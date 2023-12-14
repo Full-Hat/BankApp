@@ -36,8 +36,8 @@ qt_add_executable(${ProjectName}
         core/Credits.hpp
         core/Documents.cpp
         core/Documents.hpp
-        backend/ApiPublic.hpp
-        backend/ApiTest.hpp
+        core/utils.cpp
+        core/utils.hpp
 )
 
 qt_add_executable(test_app
@@ -52,7 +52,8 @@ qt_add_executable(test_app
         test_api.hpp
         core/Cards.cpp
         core/Cards.hpp
-        backend/ApiTest.hpp
+        core/utils.cpp
+        core/utils.hpp
 )
 
 qt_add_qml_module(${ProjectName}

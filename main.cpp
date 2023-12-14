@@ -13,6 +13,7 @@
 #include "core/User.hpp"
 #include "core/Credits.hpp"
 #include "core/Documents.hpp"
+#include "core/utils.hpp"
 
 #include <QFile>
 #include <QIODevice>
@@ -51,6 +52,9 @@ int main(int argc, char* argv[]) {
 
     Documents DocumentsController;
     qml_engine.rootContext()->setContextProperty("CtrDocuments", &DocumentsController);
+
+    Utils UtilsController;
+    qml_engine.rootContext()->setContextProperty("CtrUtils", &UtilsController);
 
     CurrentUser::Get().SetToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJjcmF6eXRodHBsYXlAZ21haWwuY29tIiwianRpIjoiYjQxMTNkNjQtZTdmYS00Mzc3LWFiM2YtNDM1YmMyNDk3ZWFjIiwibmJmIjoxNzAxODAyMjczLCJleHAiOjE3MzMzMzgyNzMsImlhdCI6MTcwMTgwMjI3NH0.4XQ0OJB4Kv6_FKrfLHi7RmzYaZNeAgGs5orIdAmFSbc");
     // Load frontend
