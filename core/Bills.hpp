@@ -31,12 +31,15 @@ Q_OBJECT
     bool isBlocked;
     Q_PROPERTY(QString name READ getName WRITE setName)
     QString name;
+    Q_PROPERTY(QString currency READ getCurrency WRITE setCurrency)
+    QString currency;
 
 public:
-    Bill(QString number, double  value, QString name, bool isBlocked = false) {
+    Bill(QString number, double  value, QString name, QString currency, bool isBlocked = false) {
         this->number = number;
         this->value = value;
         this->name = name;
+        this->currency = currency;
         this->isBlocked = isBlocked;
     }
 
@@ -55,6 +58,10 @@ public:
     [[nodiscard]]
     QString getName() const { return name; };
     void setName(QString name) { this->name = name; };
+
+    [[nodiscard]]
+    QString getCurrency() const { return currency; }
+    void setCurrency(const QString &currency) { this->currency = currency; }
 };
 
 class Bills : public QObject{
@@ -100,7 +107,7 @@ public slots:
     void onHistory(const QString &target);
 
     void onRemoveBill(const QString &target);
-    void onAddBill(const QString &name);
+    void onAddBill(const QString &name, const QString &currency);
 
     void onUpdate();
 signals:
@@ -108,6 +115,7 @@ signals:
     void updateHistory(QList<QObject*> history);
     void showWarning(QString message);
     void showHistory();
+    void currencyUpdateSignal(QList<QObject*> objs);
 
 protected:
     mutable ApiObj *m_backend = new backend::Api();

@@ -22,7 +22,7 @@ QList<QObject *> Bills::getBills() {
     }
     backend_bills.clear();
     for(const auto& data : res.datas) {
-        std::shared_ptr<Bill> bill = std::make_shared<Bill>(data.number, data.value, data.name, data.isBlocked);
+        std::shared_ptr<Bill> bill = std::make_shared<Bill>(data.number, data.value, data.name, data.currency, data.isBlocked);
         backend_bills.append(bill);
     }
 
@@ -149,14 +149,14 @@ void Bills::onRemoveBill(const QString &target) {
     emit billsChanged(getBills(), false);
 }
 
-void Bills::onAddBill(const QString &name) {
+void Bills::onAddBill(const QString &name, const QString &currency) {
     std::cout << "[backend] " << "bill added" << std::endl;
 
     if (name == "") {
         emit showWarning("Name can not be empty");
         return;
     }
-    auto code = m_backend->AccountsAdd(CurrentUser::Get().GetToken(), name);
+    auto code = m_backend->AccountsAdd(CurrentUser::Get().GetToken(), name, currency);
 
     if (code != 200) {
         emit showWarning(m_backend->getLastError());

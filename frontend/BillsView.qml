@@ -118,9 +118,6 @@ Column {
             width: 150
 
             onClicked: {
-                if (billsView.count - 1 === 0) {
-                    disableButtons();
-                }
                 CtrBills.onRemoveBill(billListModel.get(billsView.currentIndex).billNumber);
                 console.log("Delete bill button");
             }
@@ -132,12 +129,13 @@ Column {
             width: 150
 
             onClicked: {
-                get_string.item.ok = function (str) {
+                CtrUtils.onCurrencyUpdate();
+                get_string.item.ok = function (str, currency) {
                     console.log("Add bill button");
-                    CtrBills.onAddBill(str);
+                    CtrBills.onAddBill(str, currency);
                     billsView.currentIndex = billListModel.count - 1;
                 };
-                get_string.item.no = function (str) {};
+                get_string.item.no = function (str, currency) {};
                 get_string.item.open();
             }
         }
@@ -155,7 +153,8 @@ Column {
                         "billNumber": bill.number,
                         "balance": String(bill.value),
                         "isBlocked": bill.isBlocked,
-                        "name": bill.name
+                        "name": bill.name,
+                        "currency": bill.currency
                     });
             }
 
@@ -187,6 +186,9 @@ Column {
                 billsView.currentIndex = 0;
             }
             console.log("Index " + billsView.currentIndex);
+            if (billsView.currentIndex === -1) {
+                billsView.currentIndex = 0
+            }
         }
         function onShowWarning(message) {
             popUp.item.localText = message;

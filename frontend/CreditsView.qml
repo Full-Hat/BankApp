@@ -57,6 +57,24 @@ Column {
 
     Row {
         ComboBox {
+            id: accountBox
+            width: 200
+            model: ListModel {
+                id: accountModel
+                //ListElement { text: "None" }
+            }
+            Connections {
+                target: CtrBills
+
+                function onBillsChanged(objs, saveCurrent) {
+                    accountModel.clear()
+                    for (var i = 0; i < objs.length; i++) {
+                        accountModel.append({"account": objs[i].number})
+                    }
+                }
+            }
+        }
+        ComboBox {
             id: combo
             editable: false
             model: ListModel {
@@ -135,13 +153,15 @@ Column {
 
             onClicked: {
                 console.log("Add credit button" + yearBox.text + " " + parseInt(yearBox.currentText));
-                CtrCredits.onAddCredit(Number(sumField.text), parseInt(yearBox.currentText));
+                CtrCredits.onAddCredit(Number(sumField.text), parseInt(yearBox.currentText), accountBox.currentText);
             }
         }
     }
 
     Connections {
         function onCreditsChanged(credits, saveCurrent) {
+            CtrBills.onUpdate()
+
             console.log("onCreditsChanged")
             let modelSize = creditListModel.count;
             let currentIndex = creditsView.currentIndex;

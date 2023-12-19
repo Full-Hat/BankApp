@@ -164,9 +164,9 @@ void CardsArray::onRemoveCard(const QString &target) {
     emit cardsCardsChanged(getCards(), false);
 }
 
-void CardsArray::onAddCard() {
+void CardsArray::onAddCard(QString currency) {
     std::cout << "[backend] " << "card added" << std::endl;
-    auto code = m_backend->CardsAdd(CurrentUser::Get().GetToken());
+    auto code = m_backend->CardsAdd(CurrentUser::Get().GetToken(), currency);
     if (code != 200) {
         emit showWarning(m_backend->getLastError());
         return;

@@ -156,14 +156,20 @@ Column {
             width: 150
 
             onClicked: {
-                CtrCards.onAddCard();
-                console.log("Add card button");
-                cardsView.currentIndex = cardListModel.count - 1;
+                CtrUtils.onCurrencyUpdate();
+                get_card.item.ok = function (currency) {
+                    console.log("Add card button");
+                    CtrCards.onAddCard(currency);
+                    cardsView.currentIndex = cardListModel.count - 1;
+                };
+                get_card.item.no = function (currency) {};
+                get_card.item.open();
             }
         }
     }
     Connections {
         function onCardsCardsChanged(cards, saveCurrent) {
+            CtrBills.onUpdate()
             let modelSize = cardListModel.count;
             let currentIndex = cardsView.currentIndex;
 

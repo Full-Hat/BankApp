@@ -172,6 +172,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
             data.name = jsonObject["name"].toString();
             data.value = jsonObject["balance"].toDouble();
             data.isBlocked = jsonObject["isBlocked"].toBool();
+            data.currency = jsonObject["currency"].toString();
 
             result.datas.push_back(data);
         }
@@ -179,13 +180,13 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return result;
     }
 
-    uint16_t Api::AccountsAdd(const QString &token, const QString &name) {
+    uint16_t Api::AccountsAdd(const QString &token, const QString &name, const QString &currency) {
         Post req;
         req.SetUrl(m_url_base + "accounts");
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
         req.m_json["name"] = name;
-        req.m_json["currency"] = "USD";
+        req.m_json["currency"] = currency;
 
         auto reply = req.send();
 
@@ -234,12 +235,12 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return result;
     }
 
-    uint16_t Api::CardsAdd(const QString &token) {
+    uint16_t Api::CardsAdd(const QString &token, QString currency) {
         Post req;
         req.SetUrl(m_url_base + "cards");
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
 
-        req.m_json["currency"] = "USD";
+        req.m_json["currency"] = currency;
 
         auto reply = req.send();
         CheckForError(*reply);
@@ -266,7 +267,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         result.number = jsonObject["number"].toString();
         result.date = jsonObject["validityPeriod"].toString();
         result.cvv = jsonObject["cvv"].toString();
-        result.value = jsonObject["balance"].toInt();
+        result.value = jsonObject["balance"].toDouble();
 
         return result;
     }
@@ -461,7 +462,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return result;
     }
 
-    uint16_t Api::AddCredit(const QString &token, double sum, uint16_t years) {
+    uint16_t Api::AddCredit(const QString &token, double sum, uint16_t years, QString name) {
         Post req;
         req.SetUrl(m_url_base + "credits");
         req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
@@ -469,7 +470,7 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         std::stringstream str;
         str << std::fixed << std::setprecision(2) << sum;
         req.m_json["sum"] = QString::fromStdString(str.str());
-        req.m_json["currency"] = "USD";
+        req.m_json["accountIdentifier"] = name;
         req.m_json["years"] = years;
 
         auto reply = req.send();
@@ -606,15 +607,15 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
 
         auto reply = req.m_manager->post(req.m_request, multiPart);
         QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-        QTimer::singleShot(1000, &loop, &QEventLoop::quit);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        //QTimer::singleShot(1000, &loop, &QEventLoop::quit);
         loop.exec();
 
         qDebug() << "send document complete";
 
-        //CheckForError(*reply);
+        CheckForError(*reply);
 
-        //reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
         return 200;
     }
 
@@ -670,6 +671,32 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         CheckForError(*reply);
 
         return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    Api::resp_currencies Api::GetCurrencies(const QString &token) {
+        resp_currencies result;
+
+        Get req;
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        QUrl url(m_url_base + "currencies/list");
+
+        req.m_request.setUrl(url);
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        qDebug() << req.m_request.url();
+
+        result.code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        auto &res = result.currencies;
+        for (auto el : json.array()) {
+            res.push_back(el.toString());
+        }
+
+        return result;
     }
 
 

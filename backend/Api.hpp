@@ -54,7 +54,7 @@ struct Post : public Request {
         QNetworkReply *reply = m_manager->post(m_request, QJsonDocument(m_json).toJson());
 
         QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         return reply;
@@ -66,7 +66,7 @@ struct Get : public Request {
         QNetworkReply *reply = m_manager->get(m_request);
 
         QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         return reply;
@@ -78,7 +78,7 @@ struct Delete : public Request {
         QNetworkReply *reply = m_manager->deleteResource(m_request);
 
         QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         return reply;
@@ -90,7 +90,7 @@ struct Put : public Request {
         QNetworkReply *reply = m_manager->put(m_request, QJsonDocument(m_json).toJson());
 
         QEventLoop loop;
-        QObject::connect(m_manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
         return reply;
@@ -146,6 +146,7 @@ public:
             QString number;
             double value;
             bool isBlocked;
+            QString currency;
         };
         std::vector<data> datas;
     };
@@ -154,7 +155,7 @@ public:
     virtual resp_accounts_get AccountsGet(const QString &token);
 
     [[nodiscard]]
-    uint16_t AccountsAdd(const QString &token, const QString &name);
+    uint16_t AccountsAdd(const QString &token, const QString &name, const QString &currency);
 
     [[nodiscard]]
     uint16_t AccountsRemove(const QString &number, const QString &token);
@@ -175,14 +176,14 @@ public:
     virtual resp_cards_get CardsGet(const QString &token);
 
     [[nodiscard]]
-    uint16_t CardsAdd(const QString &token);
+    uint16_t CardsAdd(const QString &token, QString currency);
 
     struct resp_cards_details_get {
         uint16_t code;
         QString number;
         QString date;
         QString cvv;
-        uint32_t value;
+        double value;
     };
 
     [[nodiscard]]
@@ -254,7 +255,7 @@ public:
     resp_credits_get CreditsGet(const QString &token);
 
     [[nodiscard]]
-    uint16_t AddCredit(const QString &token, double sum, uint16_t years);
+    uint16_t AddCredit(const QString &token, double sum, uint16_t years, QString name);
 
     [[nodiscard]]
     uint16_t PayCredit(const QString &token, const QString &creditHashId, const QString &from);
@@ -320,6 +321,14 @@ public:
 
     [[nodiscard]]
     uint16_t RemoveDocument(const QString &token, const QString &hash);
+
+    struct resp_currencies {
+        QList<QString> currencies;
+        uint16_t code;
+    };
+
+    [[nodiscard]]
+    resp_currencies GetCurrencies(const QString &token);
 
 protected:
     void CheckForError(QNetworkReply &reply);

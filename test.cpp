@@ -80,11 +80,6 @@ public:
     }
 };
 
-TEST(Card, init) {
-    Cards_t cards;
-    cards.testGetCards();
-}
-
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 

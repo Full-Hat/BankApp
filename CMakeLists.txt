@@ -80,6 +80,7 @@ qt_add_qml_module(${ProjectName}
         "frontend/Details.qml"
         "frontend/Credit.qml"
         "frontend/Document.qml"
+        "frontend/NewCard.qml"
         RESOURCES
         "frontend/images/card_background.png"
         "frontend/images/card_background1.png"

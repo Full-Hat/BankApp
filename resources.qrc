@@ -21,6 +21,7 @@
 		<file>Credit.qml</file>
 		<file>Document.qml</file>
 		<file>DocumentsView.qml</file>
+		<file>NewCard.qml</file>
 	</qresource>
 	<qresource prefix="frontend/images">
 		<file>card_background.png</file>

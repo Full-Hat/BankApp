@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 
 Dialog {
    id: dialog
-   title: "Enter a string"
+   title: "Account creation"
    standardButtons: Dialog.Ok | Dialog.Cancel
 
    width: 500
@@ -14,7 +14,7 @@ Dialog {
 
     Row {
        width: parent.width
-        spacing: 10
+        y: parent.y - 20
         ComboBox {
             id: currencyComboBox
             width: 100
@@ -22,7 +22,7 @@ Dialog {
             textRole: "currency"
 
             onActivated: {
-                selectedCurrency = currencyComboBox.currentText;
+
             }
 
             Component.onCompleted: {
@@ -34,9 +34,7 @@ Dialog {
             width: 300
             placeholderText: qsTr("enter name here")
             font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
             font.family: "Verdana"
-            anchors.horizontalCenter: parent.horizontalCenter
         }
     }
     ListModel {
@@ -45,18 +43,18 @@ Dialog {
 
    onAccepted: {
        console.log("User input: ")
-       ok(textInput.text)
+       ok(textInput.text, currencyComboBox.currentText)
        textInput.text = ""
    }
 
    onRejected: {
         console.log("User rejected")
-        no(textInput.text)
+        no(textInput.text, currencyComboBox.currentText)
         textInput.text = ""
    }
 
    Connections {
-       function currencyUpdateSignal(objs) {
+       function onCurrencyUpdateSignal(objs) {
            console.log("Received currency update signal")
            currencyModel.clear()
 

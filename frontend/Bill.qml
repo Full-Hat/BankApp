@@ -53,7 +53,13 @@ Rectangle {
 
             Text {
                 //anchors.verticalCenterOffset: 20
-                text: "Balance: " + balance
+                text: "Balance: " + Number(balance).toFixed(2)
+                color: "white"
+            }
+
+            Text {
+                //anchors.verticalCenterOffset: 20
+                text: currency
                 color: "white"
             }
         }

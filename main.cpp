@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
     Utils UtilsController;
     qml_engine.rootContext()->setContextProperty("CtrUtils", &UtilsController);
 
-    CurrentUser::Get().SetToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJjcmF6eXRodHBsYXlAZ21haWwuY29tIiwianRpIjoiYjQxMTNkNjQtZTdmYS00Mzc3LWFiM2YtNDM1YmMyNDk3ZWFjIiwibmJmIjoxNzAxODAyMjczLCJleHAiOjE3MzMzMzgyNzMsImlhdCI6MTcwMTgwMjI3NH0.4XQ0OJB4Kv6_FKrfLHi7RmzYaZNeAgGs5orIdAmFSbc");
+    CurrentUser::Get().SetToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJjcmF6eXRodHBsYXlAZ21haWwuY29tIiwianRpIjoiY2IzNzhjODYtMGUwYi00YjU1LTk4ODAtNWM4NDQ3YjE4OTQ3IiwibmJmIjoxNzAzMDE4NjEzLCJleHAiOjE3MzQ1NTQ2MTMsImlhdCI6MTcwMzAxODYxM30.jsiwPCAxYBm2zPg84e0IYExA2Zss_CKcOxTYA_tOMXw");
     // Load frontend
     qml_engine.load(QUrl("qrc:/main/frontend/Main.qml"));
 

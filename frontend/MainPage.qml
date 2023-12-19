@@ -198,6 +198,17 @@ Rectangle {
             item.x = windows.x - 250
         }
     }
+    Loader {
+        id: get_card
+        width: 300
+        height: 300
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: parent.height * 0.5
+        source: "qrc:/main/frontend/NewCard.qml"
+        onLoaded: {
+            item.x = windows.x - 250
+        }
+    }
     //
     //
     // Loader {

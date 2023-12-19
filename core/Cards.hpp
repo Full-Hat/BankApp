@@ -112,13 +112,13 @@ public slots:
     void onHistory(const QString &target);
 
     void onRemoveCard(const QString &target);
-    void onAddCard();
+    void onAddCard(QString currency);
 
     void onUpdate();
 signals:
     void cardsCardsChanged(QList<QObject*> cards, bool saveCurrent);
     void updateHistory(QList<QObject*> history);
-    void cardsDetails(uint16_t code, QString number, QString date, QString cvv, uint32_t value);
+    void cardsDetails(uint16_t code, QString number, QString date, QString cvv, double value);
     void showWarning(QString message);
     void showHistory();
 

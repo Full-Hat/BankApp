@@ -7,6 +7,7 @@
 #include <QObject>
 
 #include "backend/Api.hpp"
+#include "core/User.hpp"
 
 class Currency : public QObject {
     Q_OBJECT
@@ -34,12 +35,16 @@ public:
 
 public slots:
     void onCurrencyUpdate() {
-        QList<QString> currencies;
+        auto res = m_backend.GetCurrencies(CurrentUser::Get().GetToken());
+        if (res.code != 200) {
+            return;
+        }
+
         m_currencies.clear();
 
         QList<QObject*> objs;
 
-        for (auto el : currencies) {
+        for (auto el : res.currencies) {
             auto temp = std::make_shared<Currency>();
             temp->setCurrency(el);
             m_currencies.push_back(temp);

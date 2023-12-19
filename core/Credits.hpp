@@ -95,7 +95,7 @@ public:
 public slots:
     void onCurrentCreditUpdate(const QString& newNumber);
 
-    void onAddCredit(double sum, uint16_t years);
+    void onAddCredit(double sum, uint16_t years, QString name);
 
     void onUpdateDatesEvent();
 

@@ -73,7 +73,7 @@ Popup {
                 Text {
                     font.pixelSize: 16
                     horizontalAlignment: Text.AlignRight
-                    text: balance.toString()
+                    text: balance.toFixed(2).toString()
                 }
             }
             Button {
