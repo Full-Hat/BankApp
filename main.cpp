@@ -14,6 +14,7 @@
 #include "core/Credits.hpp"
 #include "core/Documents.hpp"
 #include "core/utils.hpp"
+#include "core/Bonus.hpp"
 
 #include <QFile>
 #include <QIODevice>
@@ -55,6 +56,9 @@ int main(int argc, char* argv[]) {
 
     Utils UtilsController;
     qml_engine.rootContext()->setContextProperty("CtrUtils", &UtilsController);
+
+    BonusView BonusController;
+    qml_engine.rootContext()->setContextProperty("CtrBonus", &BonusController);
 
     CurrentUser::Get().SetToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJjcmF6eXRodHBsYXlAZ21haWwuY29tIiwianRpIjoiY2IzNzhjODYtMGUwYi00YjU1LTk4ODAtNWM4NDQ3YjE4OTQ3IiwibmJmIjoxNzAzMDE4NjEzLCJleHAiOjE3MzQ1NTQ2MTMsImlhdCI6MTcwMzAxODYxM30.jsiwPCAxYBm2zPg84e0IYExA2Zss_CKcOxTYA_tOMXw");
     // Load frontend

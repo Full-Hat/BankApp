@@ -74,6 +74,14 @@ Rectangle {
                     stackLayout.currentIndex = 3
                 }
             }
+
+            Button {
+                text: "Bonus"
+                width: parent.width
+                onClicked: {
+                    stackLayout.currentIndex = 4
+                }
+            }
         }
     }
 
@@ -111,6 +119,10 @@ Rectangle {
 
                 ListModel {
                     id: documentListModel
+                }
+
+                ListModel {
+                    id: bonusListModel
                 }
 
                 Item {
@@ -171,6 +183,22 @@ Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                         onLoaded: {
                             CtrDocuments.onUpdate(4, 2023)
+                        }
+                    }
+                }
+                Item {
+                    // Documents
+                    // Credits
+                    width: parent.width
+                    height: parent.height
+
+                    Loader {
+                        id: bonus
+                        source: "qrc:/main/frontend/BonusView.qml"
+
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        onLoaded: {
+                            CtrBonus.onUpdate()
                         }
                     }
                 }

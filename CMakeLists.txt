@@ -38,6 +38,8 @@ qt_add_executable(${ProjectName}
         core/Documents.hpp
         core/utils.cpp
         core/utils.hpp
+        core/Bonus.cpp
+        core/Bonus.hpp
 )
 
 qt_add_executable(test_app
@@ -81,6 +83,8 @@ qt_add_qml_module(${ProjectName}
         "frontend/Credit.qml"
         "frontend/Document.qml"
         "frontend/NewCard.qml"
+        "frontend/BonusView.qml"
+        "frontend/Bonus.qml"
         RESOURCES
         "frontend/images/card_background.png"
         "frontend/images/card_background1.png"

@@ -699,6 +699,108 @@ Api::resp_login_confirm Api::LoginConfirm(const QString &login, const QString &c
         return result;
     }
 
+    Api::resp_rounding Api::GetRounding(const QString &token) {
+        resp_rounding result;
+
+        Get req;
+        req.SetUrl(m_url_base + "savings/rounding");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        auto code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray array = json.array();
+        for(auto && i : array) {
+            auto jsonObject = i.toObject();
+            resp_rounding::data res;
+            res.currency = jsonObject["currency"].toString("Undefined");
+            res.hash = jsonObject["hashId"].toString("Undefined");
+            res.sum = jsonObject["savingSum"].toDouble();
+            res.total_sum = jsonObject["alreadySavedSum"].toDouble(0.0);
+            result.datas.push_back(res);
+        }
+
+        return result;
+    }
+
+    Api::resp_periodical Api::GetPeriodical(const QString &token) {
+        resp_periodical result;
+
+        Get req;
+        req.SetUrl(m_url_base + "savings/periodical");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        auto reply = req.send();
+        CheckForError(*reply);
+
+        auto code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+
+        auto json = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray array = json.array();
+        for(auto && i : array) {
+            auto jsonObject = i.toObject();
+            resp_periodical::data res;
+            res.dayOfMonth = jsonObject["dayOfMonth"].toInt();
+            res.takingSum = jsonObject["takingSum"].toDouble();
+            res.takingAccountIdentifier = jsonObject["takingAccountIdentifier"].toString();
+            res.hashId = jsonObject["hashId"].toString();
+            res.savingSum = jsonObject["savingSum"].toDouble();
+            res.alreadySavedSum = jsonObject["alreadySavedSum"].toDouble();
+            result.datas.push_back(res);
+        }
+
+        return result;
+    }
+
+    uint16_t Api::SetRounding(const QString &token, QString sum, QString currency) {
+        Post req;
+        req.SetUrl(m_url_base + "savings/rounding");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["savingSum"] = sum;
+        req.m_json["currency"] = currency;
+
+        auto reply = req.send();
+
+        CheckForError(*reply);
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    uint16_t Api::SetPeriodical(const QString &token, double sum, int day, double taking_sum, QString account) {
+        Post req;
+        req.SetUrl(m_url_base + "savings/periodical");
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["savingSum"] = sum;
+        req.m_json["dayOfMonth"] = day;
+        req.m_json["takingSum"] = taking_sum;
+        req.m_json["takingAccountIdentifier"] = account;
+
+        auto reply = req.send();
+
+        CheckForError(*reply);
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
+    uint16_t Api::RemoveBonus(const QString &token, QString hash, QString account) {
+        Post req;
+        req.SetUrl(m_url_base + "savings/cash-out/" + hash);
+        req.m_request.setRawHeader("Authorization", QByteArray((QString("Bearer ") + token).toStdString().data()));
+
+        req.m_json["accountIdentifier"] = account;
+
+        auto reply = req.send();
+
+        CheckForError(*reply);
+
+        return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toUInt();
+    }
+
 
 
     // Получение кредита процент срок

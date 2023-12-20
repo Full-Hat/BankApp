@@ -62,7 +62,7 @@ Column {
         anchors.horizontalCenter: parent.horizontalCenter
         font.pixelSize: 23
         horizontalAlignment: Text.AlignHCenter
-        text: "Your -^- Declaration"
+        text: "Your -^- bonus"
     }
 
     Row {

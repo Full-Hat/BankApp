@@ -330,6 +330,49 @@ public:
     [[nodiscard]]
     resp_currencies GetCurrencies(const QString &token);
 
+    struct resp_periodical {
+        uint16_t code;
+        struct data {
+            int dayOfMonth;
+            double takingSum;
+            QString takingAccountIdentifier;
+            QString hashId;
+            double savingSum;
+            double alreadySavedSum;
+        };
+        QList<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_periodical GetPeriodical(const QString &token);
+
+    struct resp_rounding {
+        struct data {
+            QString currency;
+            QString hash;
+            double sum;
+            double total_sum;
+        };
+        QList<data> datas;
+    };
+
+    [[nodiscard]]
+    resp_rounding GetRounding(const QString &token);
+
+    struct resp_periodical_get {
+        uint16_t code;
+        QString hash;
+    };
+
+    [[nodiscard]]
+    uint16_t SetPeriodical(const QString &token, double sum, int day, double taking_sum, QString account);
+
+    [[nodiscard]]
+    uint16_t SetRounding(const QString &token, QString sum, QString currency);
+
+    [[nodiscard]]
+    uint16_t RemoveBonus(const QString &token, QString hash, QString account);
+
 protected:
     void CheckForError(QNetworkReply &reply);
 
