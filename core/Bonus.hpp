@@ -78,8 +78,8 @@ public:
     using BonusSecondPtr = std::shared_ptr<BonusSecond>;
 
     // Arrays of shared pointers
-    QVector<BonusPtr> bonusArray;
-    BonusSecondPtr bonusSecondArray;
+    BonusPtr bonusArray;
+    QVector<BonusSecondPtr> bonusSecondArray;
 
 public slots:
     // Slot to update the currency and emit the updateCurrency signal
@@ -93,7 +93,7 @@ signals:
     // Signal to show a warning message
     void showWarning(const QString& message);
 
-    void bonusesChanges(QList<QObject*> objs, QObject obj);
+    void bonusesChanges(QList<QObject*> objs, QObject *obj);
 
 public:
     backend::Api m_backend;

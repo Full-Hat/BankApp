@@ -31,16 +31,16 @@ void BonusView::onUpdate(QString currensy) {
         return el.currency == currensy;
     });
 
-    bonusSecondArray.reset();
-    bonusSecondArray = std::make_shared<Bonus>(it->currency, it->sum);
+    bonusArray.reset();
+    bonusArray = std::make_shared<Bonus>(it->currency, it->sum);
+    QObject *obj = bonusArray.get();
 
     auto res1 = m_backend.GetPeriodical(CurrentUser::Get().GetToken());
-    auto it = std::find_if(res1.datas.begin(), res1.datas.end(), [&](auto el) {
-        return el.hashId == currensy
-    })
     QList<QObject*> objs;
-    for (auto el : res.datas) {
-        bonusArray.push_back(std::make_shared<Bonus>(el.currency, el.sum));
-        objs.push_back(bonusArray.last().get());
+    for (auto el : res1.datas) {
+        bonusSecondArray.push_back(std::make_shared<BonusSecond>(el.savingSum, el.dayOfMonth, el.takingAccountIdentifier, el.takingSum));
+        objs.push_back(bonusSecondArray.last().get());
     }
+
+    emit bonusesChanges(objs, obj);
 }
